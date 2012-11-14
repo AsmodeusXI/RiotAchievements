@@ -1,0 +1,7 @@
+/*C3*/SET SCHEMA PUBLIC
+drop table testtable
+create table testtable ( id INTEGER, name VARCHAR(64))
+INSERT INTO TESTTABLE VALUES(1,'testvalue')
+COMMIT
+drop table testtable
+DISCONNECT
