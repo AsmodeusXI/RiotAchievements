@@ -13,12 +13,11 @@ public class Player {
 	
 	private String mUserName;
 	private static final int NAME_IDX = 1;
-	// CREATE_DATE is 2 
 	
 	private long mUserCreateDate;
 	private static final int CREATE_DATE_IDX = 2;
 	
-	private int mTotalGames; //4
+	private int mTotalGames;
 	private static final int TOTAL_GAMES_IDX = 3;
 	
 	private int mTotalWins;
@@ -136,7 +135,7 @@ public class Player {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			connection.close();
+			if(connection != null) connection.close();
 		}
 	}
 	
@@ -154,6 +153,14 @@ public class Player {
     	mTotalSpellsCast = 0;
     	mTotalSpellDmg = 0;
     	mTotalPlayTime = 0;
+	}
+	
+	public long getUserCreateDate() {
+		return mUserCreateDate;
+	}
+	
+	public void updatePlayerDataInDB() {
+		
 	}
 
 }
