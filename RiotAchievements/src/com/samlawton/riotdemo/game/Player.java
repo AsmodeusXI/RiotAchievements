@@ -29,7 +29,7 @@ public class Player {
 	private int mTotalAtkAttempts;
 	private static final int TOTAL_ATK_ATTEMPTS_IDX = 6;
 	
-	private int mTotalHitNum;
+	private double mTotalHitNum;
 	private static final int TOTAL_HIT_NUM_IDX = 7;
 	
 	private int mTotalDmg;
@@ -56,44 +56,64 @@ public class Player {
 	private ArrayList<Achievement> mPlayerAchievements;
 	
 	public Player(String aUserName) {
+		this(aUserName, null);
+	}
+	
+	public Player(String aUserName, String[] aJDBCParams) {
 		if(aUserName.contains(" ") || aUserName.contains(";") || aUserName.contains("/")) {
 			System.out.println("Error! Player name is invalid!");
 			System.exit(1);
 		}
+		
 		mUserName = aUserName;
 		try {
-			initializePlayerFromDB(aUserName);
+			if(aJDBCParams == null) {
+				initializePlayerFromDB(aUserName);
+			} else {
+				if(!(aJDBCParams.length == 4)) {
+					initializePlayerFromDB(aUserName);
+				} else {
+					initializePlayerFromDB(aUserName, aJDBCParams[0], aJDBCParams[1], aJDBCParams[2], aJDBCParams[3]);
+				}
+			}
 		} catch (SQLException aEx) {
 			System.out.println("Slight database issue... but no worries!");
+			aEx.printStackTrace();
 			initializePlayerWithoutDB();
 		}
 		
 	}
 	
 	private void initializePlayerFromDB(String aUserName) throws SQLException {
+		initializePlayerFromDB(aUserName, null, null, null, null);
+	}
+	
+	private void initializePlayerFromDB(String aUserName, String aDriver, String aURL, String aUser, String aPass) throws SQLException {
 		Connection connection = null;
+		
+		String currentDriver = aDriver == null ? Game.jdbcDriver : aDriver;
+		String currentJDBCURL = aURL == null ? Game.jdbcString : aURL;
+		String currentUser = aUser == null ? Game.jdbcUser : aUser;
+		String currentPass = aPass == null ? Game.jdbcPass : aPass;
 		
 		try {
 			
-			Class.forName("org.hsqldb.jdbcDriver");
+			Class.forName(currentDriver);
             
 			// Default user of the HSQLDB is 'sa'
             // with an empty password
-            connection = DriverManager.getConnection(
-                "jdbc:hsqldb:hsql://localhost/AchievementDB", "sa", "");
+            connection = DriverManager.getConnection(currentJDBCURL, currentUser, currentPass);
             
-            PreparedStatement playerStmt = connection.prepareStatement("select * from players where name = '" + aUserName + "'");
+            PreparedStatement playerStmt = connection.prepareStatement("select * from players where userName = '" + aUserName + "'");
             ResultSet playerRS = playerStmt.executeQuery();
             
-            playerRS.next();
-            
-            if(!playerRS.getString(NAME_IDX).equals("")) {
+            if(playerRS.next()) {
             	mUserCreateDate = playerRS.getLong(CREATE_DATE_IDX);
 	            mTotalGames = playerRS.getInt(TOTAL_GAMES_IDX);
 	            mTotalWins = playerRS.getInt(TOTAL_WINS_IDX);
 	        	mTotalLosses = playerRS.getInt(TOTAL_LOSSES_IDX);
 	        	mTotalAtkAttempts = playerRS.getInt(TOTAL_ATK_ATTEMPTS_IDX);
-	        	mTotalHitNum = playerRS.getInt(TOTAL_HIT_NUM_IDX);
+	        	mTotalHitNum = playerRS.getDouble(TOTAL_HIT_NUM_IDX);
 	        	mTotalDmg = playerRS.getInt(TOTAL_DMG_IDX);
 	        	mTotalKills = playerRS.getInt(TOTAL_KILLS_IDX);
 	        	mTotalFirstHitKills = playerRS.getInt(TOTAL_FIRST_HIT_KILLS_IDX);
@@ -107,7 +127,7 @@ public class Player {
 	            mTotalWins = 0;
 	        	mTotalLosses = 0;
 	        	mTotalAtkAttempts = 0;
-	        	mTotalHitNum = 0;
+	        	mTotalHitNum = 0.0;
 	        	mTotalDmg = 0;
 	        	mTotalKills = 0;
 	        	mTotalFirstHitKills = 0;
@@ -145,7 +165,7 @@ public class Player {
         mTotalWins = 0;
     	mTotalLosses = 0;
     	mTotalAtkAttempts = 0;
-    	mTotalHitNum = 0;
+    	mTotalHitNum = 0.0;
     	mTotalDmg = 0;
     	mTotalKills = 0;
     	mTotalFirstHitKills = 0;

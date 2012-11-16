@@ -8,6 +8,12 @@ public class Game {
 	private final ArrayList<Player> mBlueTeamPlayerList;
 	private final ArrayList<Player> mPurpleTeamPlayerList;
 	
+	public static final String jdbcDriver = "org.hsqldb.jdbcDriver";
+	public static final String jdbcString = "jdbc:hsqldb:hsql://localhost/AchievementDB";
+	public static final String jdbcUser = "sa";
+	public static final String jdbcPass = "";
+	public static final String dbName = "AchievementDB";
+	
 	public Game(ArrayList<Player> aPlayerList) {
 		mPlayerList = aPlayerList;
 		ArrayList<Player> btpl = new ArrayList<Player>();

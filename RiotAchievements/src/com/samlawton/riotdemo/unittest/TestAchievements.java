@@ -1,6 +1,6 @@
 package com.samlawton.riotdemo.unittest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,20 +8,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.hsqldb.Server;
+import org.junit.After;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.samlawton.riotdemo.game.Player;
 
 public class TestAchievements {
 	
-	private Server hsqlServer = null;
-	private final String jdbcDriver = "org.hsqldb.jdbcDriver";
-	private final String jdbcString = "jdbc:hsqldb:hsql://localhost/TestAchievementDB";
-	private final String jdbcUser = "sa";
-	private final String jdbcPass = "";
-	private final String dbName = "TestAchievementDB";
+	private static Server hsqlServer = null;
+	public static final String jdbcDriver = "org.hsqldb.jdbcDriver";
+	public static final String jdbcString = "jdbc:hsqldb:mem:testdb";
+	public static final String jdbcUser = "sa";
+	public static final String jdbcPass = "";
+	public static final String dbName = "testdb";
+	public static final String[] jdbcParams = {jdbcDriver, jdbcString, jdbcUser, jdbcPass};
 	
-	public void setUp() {
+	@BeforeClass
+	public static void setUp() {
 		
 		hsqlServer = new Server();
 
@@ -40,26 +44,50 @@ public class TestAchievements {
 
         // Start the database!
         hsqlServer.start();
+        
 		try {
-			Connection connection = null;
+			Connection createEnv = null;
 
-			// Getting a connection to the newly started database
 			try {
+				
 				Class.forName(jdbcDriver);
 
-				connection = DriverManager.getConnection(jdbcString, jdbcUser, jdbcPass);
+				createEnv = DriverManager.getConnection(jdbcString, jdbcUser,
+						jdbcPass);
+
+				createEnv.prepareStatement(
+						"create table players ("
+								+ "userName varchar(64) not null primary key, "
+								+ "userCreateDate double, "
+								+ "totalGames integer, "
+								+ "totalWins integer, "
+								+ "totalLosses integer, "
+								+ "totalAtkAttempts integer, "
+								+ "totalHitNum double, " + "totalDmg integer, "
+								+ "totalKills integer, "
+								+ "totalFirstHitKills integer, "
+								+ "totalAssists integer, "
+								+ "totalSpellsCast integer, "
+								+ "totalSpellDmg integer, "
+								+ "totalPlayTime double " + ");")
+						.execute();
+
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (ClassNotFoundException ce) {
-				ce.printStackTrace();
 			} finally {
-				connection.close();
+				createEnv.close();
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+		
 		}
+
 	}
 	
 	/**
@@ -70,22 +98,21 @@ public class TestAchievements {
 	public void testNewAndExistingPlayer() {
 		
 		// Creates new player and inserts into database
-		Player testPlayer = new Player("TestUser");
+		Player testPlayer = new Player("TestUser", jdbcParams);
 
 		try {
 			Connection testConn = null;
 
 			try {
 				
-				testConn = DriverManager.getConnection(
-						"jdbc:hsqldb:hsql://localhost/AchievementDB", "sa", "");
+				testConn = DriverManager.getConnection(jdbcString, jdbcUser, jdbcPass);
 				
 				/*
 				 * Grabs userName column for the name that we entered in the Player
 				 * instantiation above.
 				 */ 
 				ResultSet testRS = testConn.prepareStatement(
-						"select userName from players where name = 'TestUser'")
+						"select userName from players where userName = 'TestUser'")
 						.executeQuery();
 				testRS.next();
 				
@@ -97,7 +124,7 @@ public class TestAchievements {
 				 * Creates a new player, but it should just be grabbing the old player.
 				 * This will be proven if the create dates are the same.
 				 */
-				Player testDupPlayer = new Player("TestUser");
+				Player testDupPlayer = new Player("TestUser", jdbcParams);
 				assertEquals("This date should be the same if the users are the same.", 
 						testPlayer.getUserCreateDate(),
 						testDupPlayer.getUserCreateDate());
@@ -106,15 +133,19 @@ public class TestAchievements {
 			} catch (SQLException e) {
 				System.out.println("Encountered some kind of SQL error (statement level): " + e.getMessage());
 			} finally {
+				testConn.prepareStatement("delete from players where userName = 'TestUser'").execute();
 				testConn.close();
 			}
 			
 		} catch (SQLException e) {
 			System.out.println("Encountered some kind of SQL error (connection level): " + e.getMessage());
+		} finally {
+			
 		}
 		
 	}
 	
+	@After
 	public void tearDown() {
 		if(hsqlServer != null) hsqlServer.stop();
 	}

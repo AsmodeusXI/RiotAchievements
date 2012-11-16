@@ -1,6 +1,7 @@
 package com.samlawton.riotdemo.misctests;
 
 import java.sql.SQLException;
+import java.util.Scanner;
 
 import org.hsqldb.Server;
 
@@ -30,6 +31,12 @@ public class HSQLServerTest {
 
             // Start the database!
             hsqlServer.start();
+            
+            System.out.println("Starting HSQL Server...");
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Press Enter to stop server: ");
+            String input = scanner.nextLine();
+            System.out.println("Stopping HSQL Server.");
 
         } finally {
             // Closing the server
