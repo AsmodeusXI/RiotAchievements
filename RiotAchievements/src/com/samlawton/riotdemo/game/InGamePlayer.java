@@ -10,7 +10,7 @@ public class InGamePlayer {
 	private int mGameAssists = 0;
 	private int mGameSpellsCast = 0;
 	private int mGameSpellDmg = 0;
-	private long mGamePlayTime = 0;
+	private double mGamePlayTime = 0;
 	private boolean mGameWin = false;
 	
 	private final Player mCurrentPlayer;
@@ -18,12 +18,22 @@ public class InGamePlayer {
 	
 	private int mCurrentTeam;
 	
+	/**
+	 * Creates an InGamePlayer using the Player to represent
+	 * and the Game in which the Player is participating.
+	 * @param aCurrentPlayer The Player in the Game.
+	 * @param aCurrentGame The current Game.
+	 */
 	public InGamePlayer(Player aCurrentPlayer, Game aCurrentGame) {
 		mCurrentPlayer = aCurrentPlayer;
 		mCurrentGame = aCurrentGame;
 		
 	}
 	
+	/**
+	 * This determines for a given InGamePlayer whether they
+	 * were victorious or not based on the game and the team they were on.
+	 */
 	public void determineGameVictory() {
 		int gameWinner = mCurrentGame.getGameWinner(); 
 		if(gameWinner == 0) {
@@ -33,6 +43,17 @@ public class InGamePlayer {
 		} else {
 			setGameWin(false);
 		}
+	}
+	
+	/*
+	 * 
+	 * GETTERS AND SETTERS FOR ALL OF THE VARIABLES 
+	 * IN THE INGAMEPLAYER.
+	 * 
+	 */
+	
+	public Player getPlayerRep() {
+		return mCurrentPlayer;
 	}
 	
 	public void setCurrentTeam(int teamIdx) {
@@ -107,11 +128,11 @@ public class InGamePlayer {
 		this.mGameSpellDmg = mGameSpellDmg;
 	}
 
-	public long getGamePlayTime() {
+	public double getGamePlayTime() {
 		return mGamePlayTime;
 	}
 
-	public void setGamePlayTime(long mGamePlayTime) {
+	public void setGamePlayTime(double mGamePlayTime) {
 		this.mGamePlayTime = mGamePlayTime;
 	}
 

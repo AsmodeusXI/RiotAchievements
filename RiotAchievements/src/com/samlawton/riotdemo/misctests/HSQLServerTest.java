@@ -35,7 +35,7 @@ public class HSQLServerTest {
             System.out.println("Starting HSQL Server...");
             Scanner scanner = new Scanner(System.in);
             System.out.print("Press Enter to stop server: ");
-            String input = scanner.nextLine();
+            scanner.nextLine();
             System.out.println("Stopping HSQL Server.");
 
         } finally {

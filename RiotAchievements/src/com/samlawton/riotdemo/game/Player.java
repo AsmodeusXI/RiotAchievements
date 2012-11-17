@@ -8,58 +8,82 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.samlawton.riotdemo.achievements.Achievement;
+import com.samlawton.riotdemo.achievements.BigWinnerAchievement;
+import com.samlawton.riotdemo.achievements.BruiserAchievement;
+import com.samlawton.riotdemo.achievements.SharpshooterAchievement;
+import com.samlawton.riotdemo.achievements.VeteranAchievement;
 
 public class Player {
 	
 	private String mUserName;
-	private static final int NAME_IDX = 1;
+	public static final int NAME_IDX = 1;
 	
 	private long mUserCreateDate;
-	private static final int CREATE_DATE_IDX = 2;
+	public static final int CREATE_DATE_IDX = 2;
 	
 	private int mTotalGames;
-	private static final int TOTAL_GAMES_IDX = 3;
+	public static final int TOTAL_GAMES_IDX = 3;
 	
 	private int mTotalWins;
-	private static final int TOTAL_WINS_IDX = 4;
+	public static final int TOTAL_WINS_IDX = 4;
 	
 	private int mTotalLosses;
-	private static final int TOTAL_LOSSES_IDX = 5;
+	public static final int TOTAL_LOSSES_IDX = 5;
 	
 	private int mTotalAtkAttempts;
-	private static final int TOTAL_ATK_ATTEMPTS_IDX = 6;
+	public static final int TOTAL_ATK_ATTEMPTS_IDX = 6;
 	
 	private double mTotalHitNum;
-	private static final int TOTAL_HIT_NUM_IDX = 7;
+	public static final int TOTAL_HIT_NUM_IDX = 7;
 	
 	private int mTotalDmg;
-	private static final int TOTAL_DMG_IDX = 8;
+	public static final int TOTAL_DMG_IDX = 8;
 	
 	private int mTotalKills;
-	private static final int TOTAL_KILLS_IDX = 9;
+	public static final int TOTAL_KILLS_IDX = 9;
 	
 	private int mTotalFirstHitKills;
-	private static final int TOTAL_FIRST_HIT_KILLS_IDX = 10;
+	public static final int TOTAL_FIRST_HIT_KILLS_IDX = 10;
 	
 	private int mTotalAssists;
-	private static final int TOTAL_ASSISTS_IDX = 11;
+	public static final int TOTAL_ASSISTS_IDX = 11;
 	
 	private int mTotalSpellsCast;
-	private static final int TOTAL_SPELLS_CAST_IDX = 12;
+	public static final int TOTAL_SPELLS_CAST_IDX = 12;
 	
 	private int mTotalSpellDmg;
-	private static final int TOTAL_SPELL_DMG_IDX = 13;
+	public static final int TOTAL_SPELL_DMG_IDX = 13;
 	
 	private long mTotalPlayTime;
-	private static final int TOTAL_PLAY_TIME_IDX = 14;
+	public static final int TOTAL_PLAY_TIME_IDX = 14;
 	
 	private ArrayList<Achievement> mPlayerAchievements;
 	
+	public static final int START_ACHIEVEMENT_IDX = 3;
+	public static final int SHARPSHOOTER_IDX = 3;
+	public static final int BRUISER_IDX = 4;
+	public static final int VETERAN_IDX = 5;
+	public static final int BIG_WINNER_IDX = 6;
+	
+	/**
+	 * Constructor that uses the default Game database
+	 * connections.
+	 * @param aUserName The Player's name
+	 */
 	public Player(String aUserName) {
 		this(aUserName, null);
 	}
 	
+	/**
+	 * Constructor that takes a specific set of database
+	 * connection information. Only used in test scenarios.
+	 * @param aUserName The Player's name
+	 * @param aJDBCParams A set of JDBC connection parameters.
+	 */
 	public Player(String aUserName, String[] aJDBCParams) {
+		
+		mPlayerAchievements = initAchievements();
+		
 		if(aUserName.contains(" ") || aUserName.contains(";") || aUserName.contains("/")) {
 			System.out.println("Error! Player name is invalid!");
 			System.exit(1);
@@ -73,28 +97,52 @@ public class Player {
 				if(!(aJDBCParams.length == 4)) {
 					initializePlayerFromDB(aUserName);
 				} else {
-					initializePlayerFromDB(aUserName, aJDBCParams[0], aJDBCParams[1], aJDBCParams[2], aJDBCParams[3]);
+					initializePlayerFromDB(aUserName, aJDBCParams);
 				}
 			}
 		} catch (SQLException aEx) {
 			System.out.println("Slight database issue... but no worries!");
 			aEx.printStackTrace();
 			initializePlayerWithoutDB();
-		}
-		
+		}	
 	}
 	
+	private ArrayList<Achievement> initAchievements() {
+		ArrayList<Achievement> newAchievementList = new ArrayList<Achievement>();
+		newAchievementList.add(new SharpshooterAchievement());
+		newAchievementList.add(new BruiserAchievement());
+		newAchievementList.add(new VeteranAchievement());
+		newAchievementList.add(new BigWinnerAchievement());
+		return newAchievementList;
+	}
+	
+	/**
+	 * A Player initialization that uses the default
+	 * database configurations.
+	 * @param aUserName The Player's name.
+	 * @throws SQLException
+	 */
 	private void initializePlayerFromDB(String aUserName) throws SQLException {
-		initializePlayerFromDB(aUserName, null, null, null, null);
+		initializePlayerFromDB(aUserName, null);
 	}
 	
-	private void initializePlayerFromDB(String aUserName, String aDriver, String aURL, String aUser, String aPass) throws SQLException {
+	/**
+	 * Initializes a Player using inputted JDBC information.
+	 * Usually called explicitly with tests.
+	 * @param aUserName The Player's name
+	 * @param aDriver The JDBC driver needed.
+	 * @param aURL The JDBC URL.
+	 * @param aUser The database User (SA)
+	 * @param aPass The User's password. 
+	 * @throws SQLException Will occur if there's an issue with the Connection or Statements
+	 */
+	private void initializePlayerFromDB(String aUserName, String[] aJDBCParams) throws SQLException {
 		Connection connection = null;
 		
-		String currentDriver = aDriver == null ? Game.jdbcDriver : aDriver;
-		String currentJDBCURL = aURL == null ? Game.jdbcString : aURL;
-		String currentUser = aUser == null ? Game.jdbcUser : aUser;
-		String currentPass = aPass == null ? Game.jdbcPass : aPass;
+		String currentDriver = aJDBCParams[0] == null ? Game.jdbcDriver : aJDBCParams[0];
+		String currentJDBCURL = aJDBCParams[1] == null ? Game.jdbcString : aJDBCParams[1];
+		String currentUser = aJDBCParams[2] == null ? Game.jdbcUser : aJDBCParams[2];
+		String currentPass = aJDBCParams[3] == null ? Game.jdbcPass : aJDBCParams[3];
 		
 		try {
 			
@@ -150,6 +198,25 @@ public class Player {
 	        			mTotalSpellDmg + "','" +
 	        			mTotalPlayTime + "')").execute();
             }
+            
+            PreparedStatement achievementStmt = connection.prepareStatement("select * from playerAchievements where userName = '" + aUserName +"'");
+            ResultSet achieveRS = achievementStmt.executeQuery();
+            
+            if(achieveRS.next()) {
+            	for(int i = 0; i < mPlayerAchievements.size(); i++) {
+            		mPlayerAchievements.get(i).setIsAchieved(achieveRS.getBoolean(START_ACHIEVEMENT_IDX + i));
+            	}
+            } else {
+            	for(int i = 0; i < mPlayerAchievements.size(); i++) {
+            		mPlayerAchievements.get(i).setIsAchieved(false);
+            	}
+            	connection.prepareStatement("insert into playerAchievements values (NULL,'" +
+            			aUserName + "'," +
+            			mPlayerAchievements.get(0).getIsAchieved() + "," +
+            			mPlayerAchievements.get(1).getIsAchieved() + "," +
+            			mPlayerAchievements.get(2).getIsAchieved() + "," +
+            			mPlayerAchievements.get(3).getIsAchieved() + ")").execute();
+            }
 			
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -159,6 +226,9 @@ public class Player {
 		}
 	}
 	
+	/**
+	 * Uses non-database information to initialize player.
+	 */
 	private void initializePlayerWithoutDB() {
 		mUserCreateDate = System.currentTimeMillis();
 		mTotalGames = 0;
@@ -173,23 +243,43 @@ public class Player {
     	mTotalSpellsCast = 0;
     	mTotalSpellDmg = 0;
     	mTotalPlayTime = 0;
+    	
+    	for(int i = 0; i < mPlayerAchievements.size(); i++) {
+    		mPlayerAchievements.get(i).setIsAchieved(false);
+    	}
 	}
 	
+	/**
+	 * Gets the create date of the User
+	 * account.
+	 * @return The date in a long format (millis)
+	 */
 	public long getUserCreateDate() {
 		return mUserCreateDate;
 	}
 	
+	/**
+	 * Updates the Player data in the database with the
+	 * default JDBC settings
+	 * @throws SQLException Will occur if there's an issue with the Connection or Statements
+	 */
 	public void updatePlayerDataInDB() throws SQLException {
-		updatePlayerDataInDB(null, null, null, null);
+		updatePlayerDataInDB(null);
 	}
 	
-	public void updatePlayerDataInDB(String aDriver, String aURL, String aUser, String aPass) throws SQLException {
+	/**
+	 * Updates the Player data in the database with the
+	 * given JDBC Parameters.
+	 * @param jdbcParams The four JDBC parameters.
+	 * @throws SQLException
+	 */
+	public void updatePlayerDataInDB(String[] jdbcParams) throws SQLException {
 		Connection connection = null;
 		
-		String currentDriver = aDriver == null ? Game.jdbcDriver : aDriver;
-		String currentJDBCURL = aURL == null ? Game.jdbcString : aURL;
-		String currentUser = aUser == null ? Game.jdbcUser : aUser;
-		String currentPass = aPass == null ? Game.jdbcPass : aPass;
+		String currentDriver = jdbcParams[0] == null ? Game.jdbcDriver : jdbcParams[0];
+		String currentJDBCURL = jdbcParams[1] == null ? Game.jdbcString : jdbcParams[1];
+		String currentUser = jdbcParams[2] == null ? Game.jdbcUser : jdbcParams[2];
+		String currentPass = jdbcParams[3] == null ? Game.jdbcPass : jdbcParams[3];
 		
 		try {
 			
@@ -222,6 +312,11 @@ public class Player {
 		}
 	}
 	
+	/**
+	 * Updates the Player's historical stats using it's
+	 * recent InGame representative.
+	 * @param aJustPlayed The InGamePlayer from the most recent game.
+	 */
 	public void updatePlayerHistoricalStats(InGamePlayer aJustPlayed) {
 		mTotalGames += 1;
 		if(aJustPlayed.isGameWin()) {
@@ -240,10 +335,45 @@ public class Player {
     	mTotalPlayTime += aJustPlayed.getGamePlayTime();
 	}
 	
+	/**
+	 * Returns the Player's name.
+	 * @return The Player's name.
+	 */
 	public String getUserName() {
 		return mUserName;
 	}
-
+	
+	/**
+	 * Get Player's Total Wins.
+	 * @return The Player's Total Wins.
+	 */
+	public int getTotalWins() {
+		return mTotalWins;
+	}
+	
+	/**
+	 * Get Player's Total Losses
+	 * @return The Player's Total Losses
+	 */
+	public int getTotalLosses() {
+		return mTotalLosses;
+	}
+	
+	/**
+	 * Get the Player's Total Games
+	 * @return The Player's Total Games.
+	 */
+	public int getTotalGames() {
+		return mTotalGames;
+	}
+	
+	/**
+	 * Get the Player's Achievements
+	 * @return The Player's Achievements
+	 */
+	public ArrayList<Achievement> getPlayerAchievements() {
+		return mPlayerAchievements;
+	}
 
 	@Override
 	public int hashCode() {
