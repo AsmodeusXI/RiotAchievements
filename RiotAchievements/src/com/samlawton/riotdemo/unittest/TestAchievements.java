@@ -6,12 +6,15 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import org.hsqldb.Server;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.samlawton.riotdemo.game.Game;
+import com.samlawton.riotdemo.game.InGamePlayer;
 import com.samlawton.riotdemo.game.Player;
 
 public class TestAchievements {
@@ -63,7 +66,8 @@ public class TestAchievements {
 								+ "totalWins integer, "
 								+ "totalLosses integer, "
 								+ "totalAtkAttempts integer, "
-								+ "totalHitNum double, " + "totalDmg integer, "
+								+ "totalHitNum double, " 
+								+ "totalDmg integer, "
 								+ "totalKills integer, "
 								+ "totalFirstHitKills integer, "
 								+ "totalAssists integer, "
@@ -142,6 +146,26 @@ public class TestAchievements {
 		} finally {
 			
 		}
+		
+	}
+	
+	@Test
+	public void testUpdatePlayer() {
+		
+		Player testBluePlayer = new Player("TestBlueUpdatePlayer", jdbcParams);
+		Player testPurplePlayer = new Player("TestPurpleUpdatePlayer", jdbcParams);
+		
+		ArrayList<Player> gamePlayers = new ArrayList<Player>();
+		gamePlayers.add(testBluePlayer);
+		gamePlayers.add(testPurplePlayer);
+		
+		Game testGame = new Game(gamePlayers);
+		testGame.initPlayers();
+		
+		assertEquals("Player 1 is not on Blue team.", testGame.getPlayerTeam(testBluePlayer), Game.BLUE_TEAM_IDX);
+		assertEquals("Player 2 is not on Purple team.", testGame.getPlayerTeam(testPurplePlayer), Game.PURPLE_TEAM_IDX);
+		
+		testGame.runTestGame();
 		
 	}
 	

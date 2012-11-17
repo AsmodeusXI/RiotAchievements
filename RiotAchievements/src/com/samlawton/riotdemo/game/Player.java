@@ -179,8 +179,81 @@ public class Player {
 		return mUserCreateDate;
 	}
 	
-	public void updatePlayerDataInDB() {
+	public void updatePlayerDataInDB() throws SQLException {
+		updatePlayerDataInDB(null, null, null, null);
+	}
+	
+	public void updatePlayerDataInDB(String aDriver, String aURL, String aUser, String aPass) throws SQLException {
+		Connection connection = null;
 		
+		String currentDriver = aDriver == null ? Game.jdbcDriver : aDriver;
+		String currentJDBCURL = aURL == null ? Game.jdbcString : aURL;
+		String currentUser = aUser == null ? Game.jdbcUser : aUser;
+		String currentPass = aPass == null ? Game.jdbcPass : aPass;
+		
+		try {
+			
+			Class.forName(currentDriver);
+            
+			// Default user of the HSQLDB is 'sa'
+            // with an empty password
+            connection = DriverManager.getConnection(currentJDBCURL, currentUser, currentPass);
+            
+            connection.prepareStatement("update players set " + 
+            		"totalGames=" + mTotalGames + "," + 
+            		"totalWins=" + mTotalWins + "," +
+            		"totalLosses=" + mTotalLosses + "," +
+            		"totalAtkAttempts=" + mTotalAtkAttempts + "," +
+            		"totalHitNum=" + mTotalHitNum + "," +
+            		"totalDmg=" + mTotalDmg + "," +
+            		"totalKills=" + mTotalKills + "," +
+            		"totalFirstHitKills=" + mTotalFirstHitKills + "," +
+            		"totalAssists=" + mTotalAssists + "," +
+            		"totalSpellsCast=" + mTotalSpellsCast + "," +
+            		"totalSpellDmg=" + mTotalSpellDmg + "," +
+            		"totalPlayTime=" + mTotalPlayTime + " where userName = '" + mUserName + "'").execute();
+            
+			
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if(connection != null) connection.close();
+		}
+	}
+	
+	public void updatePlayerHistoricalStats(InGamePlayer aJustPlayed) {
+		mTotalGames += 1;
+		if(aJustPlayed.isGameWin()) {
+			mTotalWins += 1;
+		} else {
+			mTotalLosses += 1;
+		}
+    	mTotalAtkAttempts += aJustPlayed.getGameAtkAttempts();
+    	mTotalHitNum = (mTotalHitNum + aJustPlayed.getGameHitNum())/2;
+    	mTotalDmg += aJustPlayed.getGameDmg();
+    	mTotalKills += aJustPlayed.getGameKills();
+    	mTotalFirstHitKills += aJustPlayed.getGameFirstHitKills();
+    	mTotalAssists += aJustPlayed.getGameAssists();
+    	mTotalSpellsCast += aJustPlayed.getGameSpellsCast();
+    	mTotalSpellDmg += aJustPlayed.getGameSpellDmg();
+    	mTotalPlayTime += aJustPlayed.getGamePlayTime();
+	}
+	
+	public String getUserName() {
+		return mUserName;
+	}
+
+
+	@Override
+	public int hashCode() {
+		return mUserName.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		Player otherPlayer = (Player)obj;
+		return otherPlayer.getUserName().equals(mUserName);
 	}
 
 }
