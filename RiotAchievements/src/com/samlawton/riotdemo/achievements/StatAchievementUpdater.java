@@ -19,7 +19,12 @@ public class StatAchievementUpdater {
 		mFinishedGame = aGame;
 	}
 	
-	public void updateStats(String[] aJDBCParams) {
+	public void updatesFromRecentGame(String[] aJDBCParams) {
+		updateStats(aJDBCParams);
+		updateAchievements(aJDBCParams);
+	}
+	
+	private void updateStats(String[] aJDBCParams) {
 		HashMap<Player,InGamePlayer> gamePlayers = mFinishedGame.getInGameMap();
 		for(Map.Entry<Player,InGamePlayer> entry : gamePlayers.entrySet()) {
 			Player updatePlayer = entry.getKey();
@@ -34,7 +39,7 @@ public class StatAchievementUpdater {
 		}
 	}
 	
-	public void updateAchievements() {
+	private void updateAchievements(String[] aJDBCParams) {
 		HashMap<Player,InGamePlayer> gamePlayers = mFinishedGame.getInGameMap();
 		for(Map.Entry<Player,InGamePlayer> entry : gamePlayers.entrySet()) {
 			Player updatePlayer = entry.getKey();
@@ -42,7 +47,7 @@ public class StatAchievementUpdater {
 			ArrayList<Achievement> achievementList = updatePlayer.getPlayerAchievements();
 			
 			for(int i = 0; i < achievementList.size(); i++) {
-				achievementList.get(i).update(updatePlayer, lastGamePlayer);
+				achievementList.get(i).update(updatePlayer, lastGamePlayer, aJDBCParams);
 			}	
 		}
 	}

@@ -59,11 +59,16 @@ public class Player {
 	
 	private ArrayList<Achievement> mPlayerAchievements;
 	
-	public static final int START_ACHIEVEMENT_IDX = 3;
-	public static final int SHARPSHOOTER_IDX = 3;
-	public static final int BRUISER_IDX = 4;
-	public static final int VETERAN_IDX = 5;
-	public static final int BIG_WINNER_IDX = 6;
+	public static final int SHARPSHOOTER_IDX = 0;
+	public static final int BRUISER_IDX = 1;
+	public static final int VETERAN_IDX = 2;
+	public static final int BIG_WINNER_IDX = 3;
+	
+	public static final int ACHIEVEMENT_DB_OFFSET = 3;
+	public static final int SHARPSHOOTER_DB_IDX = SHARPSHOOTER_IDX + ACHIEVEMENT_DB_OFFSET;
+	public static final int BRUISER_DB_IDX = BRUISER_IDX + ACHIEVEMENT_DB_OFFSET;
+	public static final int VETERAN_DB_IDX = VETERAN_IDX + ACHIEVEMENT_DB_OFFSET;
+	public static final int BIG_WINNER_DB_IDX = BIG_WINNER_IDX + ACHIEVEMENT_DB_OFFSET;
 	
 	/**
 	 * Constructor that uses the default Game database
@@ -204,7 +209,7 @@ public class Player {
             
             if(achieveRS.next()) {
             	for(int i = 0; i < mPlayerAchievements.size(); i++) {
-            		mPlayerAchievements.get(i).setIsAchieved(achieveRS.getBoolean(START_ACHIEVEMENT_IDX + i));
+            		mPlayerAchievements.get(i).setIsAchieved(achieveRS.getBoolean(ACHIEVEMENT_DB_OFFSET + i));
             	}
             } else {
             	for(int i = 0; i < mPlayerAchievements.size(); i++) {
@@ -212,10 +217,10 @@ public class Player {
             	}
             	connection.prepareStatement("insert into playerAchievements values (NULL,'" +
             			aUserName + "'," +
-            			mPlayerAchievements.get(0).getIsAchieved() + "," +
-            			mPlayerAchievements.get(1).getIsAchieved() + "," +
-            			mPlayerAchievements.get(2).getIsAchieved() + "," +
-            			mPlayerAchievements.get(3).getIsAchieved() + ")").execute();
+            			mPlayerAchievements.get(SHARPSHOOTER_IDX).getIsAchieved() + "," +
+            			mPlayerAchievements.get(BRUISER_IDX).getIsAchieved() + "," +
+            			mPlayerAchievements.get(VETERAN_IDX).getIsAchieved() + "," +
+            			mPlayerAchievements.get(BIG_WINNER_IDX).getIsAchieved() + ")").execute();
             }
 			
 		} catch (ClassNotFoundException e) {
@@ -319,13 +324,21 @@ public class Player {
 	 */
 	public void updatePlayerHistoricalStats(InGamePlayer aJustPlayed) {
 		mTotalGames += 1;
+		
 		if(aJustPlayed.isGameWin()) {
 			mTotalWins += 1;
 		} else {
 			mTotalLosses += 1;
 		}
+		
     	mTotalAtkAttempts += aJustPlayed.getGameAtkAttempts();
-    	mTotalHitNum = (mTotalHitNum + aJustPlayed.getGameHitNum())/2;
+    	
+    	if(mTotalHitNum == 0) {
+    		mTotalHitNum = aJustPlayed.getGameHitNum();
+    	} else {
+    		mTotalHitNum = (mTotalHitNum + aJustPlayed.getGameHitNum())/2;
+    	}
+    	
     	mTotalDmg += aJustPlayed.getGameDmg();
     	mTotalKills += aJustPlayed.getGameKills();
     	mTotalFirstHitKills += aJustPlayed.getGameFirstHitKills();

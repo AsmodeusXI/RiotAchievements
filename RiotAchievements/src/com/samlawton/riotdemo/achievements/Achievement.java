@@ -7,7 +7,7 @@ public abstract class Achievement {
 	
 	private boolean mIsAchieved = false;
 	
-	public abstract void update(Player currentPlayer, InGamePlayer currentInGamePlayer);
+	public abstract void update(Player currentPlayer, InGamePlayer currentInGamePlayer, String[] aJDBCParams);
 	public abstract void printVictoryMessage(String aUserName);
 	
 	/**

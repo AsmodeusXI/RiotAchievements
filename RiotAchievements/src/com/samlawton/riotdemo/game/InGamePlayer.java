@@ -59,6 +59,10 @@ public class InGamePlayer {
 	public void setCurrentTeam(int teamIdx) {
 		mCurrentTeam = teamIdx;
 	}
+	
+	public int getCurrentTeam() {
+		return mCurrentTeam;
+	}
 
 	private void setGameWin(boolean b) {
 		mGameWin = b;
