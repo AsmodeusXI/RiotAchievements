@@ -128,7 +128,7 @@ public class Player {
 	 * @throws SQLException
 	 */
 	private void initializePlayerFromDB(String aUserName) throws SQLException {
-		initializePlayerFromDB(aUserName, null);
+		initializePlayerFromDB(aUserName, new String[]{null,null,null,null});
 	}
 	
 	/**

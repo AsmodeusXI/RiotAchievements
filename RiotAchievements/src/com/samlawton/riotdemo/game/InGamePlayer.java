@@ -37,12 +37,34 @@ public class InGamePlayer {
 	public void determineGameVictory() {
 		int gameWinner = mCurrentGame.getGameWinner(); 
 		if(gameWinner == 0) {
-			System.out.println("Game is not over; this should not be happening.");
+			System.err.println("Game is not over; this should not be happening.");
 		} else if(mCurrentTeam == gameWinner) {
 			setGameWin(true);
 		} else {
 			setGameWin(false);
 		}
+	}
+	
+	/**
+	 * Visual test method to check current Player's game stats
+	 */
+	public void printPlayersGameStats() {
+		System.out.println("Player: " + mCurrentPlayer.getUserName() + " | Game: " + mCurrentGame.getGameID());
+		if(mGameWin) {
+			System.out.println(mCurrentPlayer.getUserName() + " was victorious!");
+		} else {
+			System.out.println(mCurrentPlayer.getUserName() + " was defeated...");
+		}
+		System.out.println("Attack Attempts: " + mGameAtkAttempts);
+		System.out.println("Hit Percentage: " + mGameHitNum);
+		System.out.println("Total Damage: " + mGameDmg);
+		System.out.println("Kills: " + mGameKills);
+		System.out.println("First Hit Kills: " + mGameFirstHitKills);
+		System.out.println("Assists: " + mGameAssists);
+		System.out.println("Spells Cast: " + mGameSpellsCast);
+		System.out.println("Spell Damage: " + mGameSpellDmg);
+		System.out.println("Total Game Time (millis): " + mGamePlayTime);
+		System.out.println();
 	}
 	
 	/*

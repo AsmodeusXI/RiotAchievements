@@ -1,7 +1,5 @@
 package com.samlawton.riotdemo.achievements;
 
-import static org.junit.Assert.fail;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,15 +13,34 @@ public class StatAchievementUpdater {
 	
 	private final Game mFinishedGame;
 	
+	/**
+	 * Creates an Achievement & Stat Updater based on
+	 * the recently finished Game.
+	 * @param aGame The Game which has just concluded.
+	 */
 	public StatAchievementUpdater(Game aGame) {
 		mFinishedGame = aGame;
 	}
 	
+	/**
+	 * A public method to update all stats and
+	 * achievement scores from the most recently
+	 * played Game.
+	 * @param aJDBCParams
+	 */
 	public void updatesFromRecentGame(String[] aJDBCParams) {
 		updateStats(aJDBCParams);
 		updateAchievements(aJDBCParams);
 	}
 	
+	/**
+	 * Iterates through each player in the game and
+	 * updates their statistics both in their objects
+	 * and in the database.
+	 * @param aJDBCParams The JDBC parameters required to add to the 
+	 * database. If the String[] contains nulls, the defaults in Game.java
+	 * are used.
+	 */
 	private void updateStats(String[] aJDBCParams) {
 		HashMap<Player,InGamePlayer> gamePlayers = mFinishedGame.getInGameMap();
 		for(Map.Entry<Player,InGamePlayer> entry : gamePlayers.entrySet()) {
@@ -34,11 +51,18 @@ public class StatAchievementUpdater {
 				updatePlayer.updatePlayerDataInDB(aJDBCParams);
 			} catch (SQLException e) {
 				e.printStackTrace();
-				fail();
 			}
 		}
 	}
 	
+	/**
+	 * Iterates through each player in the game and
+	 * updates their achievements in their objects and
+	 * within the database.
+	 * @param aJDBCParams The JDBC parameters required to add to the 
+	 * database. If the String[] contains nulls, the defaults in Game.java
+	 * are used.
+	 */
 	private void updateAchievements(String[] aJDBCParams) {
 		HashMap<Player,InGamePlayer> gamePlayers = mFinishedGame.getInGameMap();
 		for(Map.Entry<Player,InGamePlayer> entry : gamePlayers.entrySet()) {
