@@ -16,6 +16,8 @@ public class InGamePlayer {
 	private final Player mCurrentPlayer;
 	private final Game mCurrentGame;
 	
+	//TODO: New Player statistics must be given a property here to be tracked in game and to update historical Player
+	
 	private int mCurrentTeam;
 	
 	/**
@@ -65,6 +67,8 @@ public class InGamePlayer {
 		System.out.println("Spell Damage: " + mGameSpellDmg);
 		System.out.println("Total Game Time (millis): " + mGamePlayTime);
 		System.out.println();
+		
+		// TODO: New player statistics must be added here for print out
 	}
 	
 	/*

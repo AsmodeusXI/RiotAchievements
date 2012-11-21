@@ -1,6 +1,6 @@
 package com.samlawton.riotdemo;
 
-public class RiotDemo {
+public class GameDriver {
 
 	/**
 	 * @param args
@@ -8,14 +8,6 @@ public class RiotDemo {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-	}
-	
-	private void setUpTestData() {
-		
-	}
-	
-	private void tearDownTestData() {
-		
 	}
 
 }

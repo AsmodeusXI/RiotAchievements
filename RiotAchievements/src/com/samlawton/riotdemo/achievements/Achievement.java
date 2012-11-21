@@ -33,5 +33,7 @@ public abstract class Achievement {
 	public void setIsAchieved(boolean aAchieved) {
 		mIsAchieved = aAchieved;
 	}
+	
+	// TODO: New achievements require a new class created that extend Achievement and override the abstract methods.
 
 }

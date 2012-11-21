@@ -30,7 +30,7 @@ public class Game {
 	private final String mGameID;
 	public static final int GAMEID_IDX = 1;
 
-	private final double mGameDate;
+	private final String mGameDate;
 	public static final int GAMEDATE_IDX = 2;
 
 	public static final int BLUE_PLAYER_ONE_IDX = 3;
@@ -71,6 +71,8 @@ public class Game {
 
 	private double mGameLength = 0.0;
 	public static final int GAME_LENGTH_IDX = 22;
+	
+	// TODO: New statistics require a new property and index corresponding to database column.
 
 	public Game(ArrayList<Player> aPlayerList) {
 		this(aPlayerList, null);
@@ -100,7 +102,7 @@ public class Game {
 		mPlayerList = aPlayerList;
 		
 		mGameID = "Game" + aPlayerList.hashCode() + System.currentTimeMillis();
-		mGameDate = System.currentTimeMillis();
+		mGameDate = DateFormat.getDateTimeInstance().format(new Date());
 		if (aJDBCParams != null) {
 			init(aJDBCParams);
 		} else {
@@ -169,8 +171,8 @@ public class Game {
 						mBlueTeamPlayerList, mPurpleTeamPlayerList);
 
 				connection.prepareStatement(
-						"insert into games values('" + mGameID + "',"
-								+ mGameDate + ",'" + insertNames.get(0) + "','"
+						"insert into games values('" + mGameID + "','"
+								+ mGameDate + "','" + insertNames.get(0) + "','"
 								+ insertNames.get(1) + "','"
 								+ insertNames.get(2) + "','"
 								+ insertNames.get(3) + "','"
@@ -185,6 +187,7 @@ public class Game {
 								+ mPurpleAssists + ",'" + mFirstBloodTeam
 								+ "','" + mFirstBloodPlayer + "',"
 								+ mGameLength + ")").execute();
+								// TODO: New game level statistics require a new value insert.
 
 				for (int i = 0; i < insertNames.size(); i++) {
 					String currentUserName = insertNames.get(i);
@@ -218,6 +221,8 @@ public class Game {
 		int totalPurpleAssists = 0;
 		String victorTeam = "";
 		String loserTeam = "";
+		
+		// TODO: New game level statistics must be set in this method (somewhere, depending on how stat is used)
 		
 		/*
 		 * Updates initial stats that help determine the rest.
@@ -338,9 +343,9 @@ public class Game {
 						"firstBloodPlayer = '" + mFirstBloodPlayer + "'," +
 						"gameLength = " + mGameLength +
 						" where gameID = '" + mGameID + "'").execute();
+						// TODO: New game level statistics must be updated here.
 				
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} finally {
 				connection.close();
@@ -360,10 +365,10 @@ public class Game {
 		int randAtkAttempts = 60 + statRand.nextInt(30);
 		// They will hit a random percentage of those attacks.
 		double randHitNum = statRand.nextDouble();
-		// Damage is attempts * percent hit * 200 damage per attack.
-		int gameDmg = (int)(randAtkAttempts * randHitNum) * 200;
+		// Damage is attempts * percent hit * 50 damage per attack.
+		int gameDmg = (int)(randAtkAttempts * randHitNum) * 50;
 		// Kills are damage / 1000
-		int gameKills = gameDmg / 1000;
+		int gameKills = gameDmg / 300;
 		// First hit kills are random number of the kills in total
 		int gameFirstHitKills = 0;
 		if(gameKills > 0) {
@@ -423,7 +428,7 @@ public class Game {
 	
 	public void printGameStats() {
 		System.out.println("Game: " + mGameID);
-		System.out.println("Game Date: " + DateFormat.getDateInstance().format(new Date((long)mGameLength)));
+		System.out.println("Game Date: " + mGameDate);
 		
 		System.out.println("Blue Team Players: ");
 		for(int i = 0; i < mBlueTeamPlayerList.size(); i++) {
@@ -449,6 +454,8 @@ public class Game {
 		System.out.println("First Blood Player: " + mFirstBloodPlayer);
 		System.out.println("First Blood Team: " + mFirstBloodTeam);
 		System.out.println("Game Length: " + mGameLength);
+		
+		//TODO: New game level statistics should be added here to be printed.
 	}
 
 	/**

@@ -65,7 +65,7 @@ public class TestAchievements {
 				createEnv.prepareStatement(
 						"create table players ("
 								+ "userName varchar(64) not null primary key, "
-								+ "userCreateDate double, "
+								+ "userCreateDate varchar(128), "
 								+ "totalGames integer, "
 								+ "totalWins integer, "
 								+ "totalLosses integer, "
@@ -77,10 +77,11 @@ public class TestAchievements {
 								+ "totalSpellsCast integer, "
 								+ "totalSpellDmg integer, "
 								+ "totalPlayTime double " + ");").execute();
+								//TODO: New player properties require an added column
 
 				createEnv.prepareStatement(
 						"create table games(gameID varchar(128) primary key,"
-								+ "gameDate double,"
+								+ "gameDate varchar(128),"
 								+ "bluePlayerOne varchar(64),"
 								+ "bluePlayerTwo varchar(64),"
 								+ "bluePlayerThree varchar(64),"
@@ -99,6 +100,7 @@ public class TestAchievements {
 								+ "firstBloodTeam varchar(8),"
 								+ "firstBloodPlayer varchar(64),"
 								+ "gameLength double);").execute();
+								// TODO: New game level properties require an added column
 
 				createEnv
 						.prepareStatement(
@@ -115,12 +117,11 @@ public class TestAchievements {
 										+ "ABruiser boolean,"
 										+ "AVeteran boolean,"
 										+ "ABigWinner boolean)").execute();
+										// TODO: New achievements require a new boolean column
 
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} finally {
 				createEnv.close();
@@ -621,11 +622,72 @@ public class TestAchievements {
 		gamePlayers.add(bluePlayer5);
 		gamePlayers.add(purplePlayer5);
 		
+		// Running the first of three games
 		Game gameOne = new Game(gamePlayers, jdbcParams);
 		
+		System.out.println("Running Game 1:");
 		gameOne.runGame(jdbcParams);
 		
-		gameOne.printAllStats();
+		//gameOne.printAllStats();
+		
+		StatAchievementUpdater gameOneStats = new StatAchievementUpdater(gameOne);
+		gameOneStats.updatesFromRecentGame(jdbcParams);
+		
+		// Running the second of three games
+		Game gameTwo = new Game(gamePlayers, jdbcParams);
+		
+		System.out.println("Running Game 2:");
+		gameTwo.runGame(jdbcParams);
+		
+		StatAchievementUpdater gameTwoStats = new StatAchievementUpdater(gameTwo);
+		gameTwoStats.updatesFromRecentGame(jdbcParams);
+		
+		// Running the third of three games
+		Game gameThree = new Game(gamePlayers, jdbcParams);
+		
+		System.out.println("Running Game 3:");
+		gameThree.runGame(jdbcParams);
+		
+		StatAchievementUpdater gameThreeStats = new StatAchievementUpdater(gameThree);
+		gameThreeStats.updatesFromRecentGame(jdbcParams);
+		
+		try {
+			
+			Connection connection = null;
+			
+			try {
+				
+				Class.forName(jdbcDriver);
+				
+				connection = DriverManager.getConnection(jdbcString, jdbcUser, jdbcPass);
+				
+				ResultSet gamesForBP1 = connection.prepareStatement("select gameID from gamesPlayed where userName = '" + bluePlayer1.getUserName() + "'").executeQuery();
+				int rsIdx = 1;
+				
+				while(gamesForBP1.next()) {
+					if(rsIdx == 1) {
+						assertEquals("All three game IDs should be in here (game one).", gameOne.getGameID(), gamesForBP1.getString(1));
+						rsIdx++;
+					} else if (rsIdx == 2) {
+						assertEquals("All three game IDs should be in here (game two).", gameTwo.getGameID(), gamesForBP1.getString(1));
+						rsIdx++;
+					} else if (rsIdx == 3) {
+						assertEquals("All three game IDs should be in here (game three).", gameThree.getGameID(), gamesForBP1.getString(1));
+						rsIdx++;
+					} else {
+						fail("We should not get this far (only three games played).");
+					}
+				}
+				
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} finally {
+				connection.close();
+			}
+			
+		} catch(SQLException ex) {
+			
+		}
 		
 	}
 	

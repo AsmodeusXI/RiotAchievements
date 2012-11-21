@@ -34,7 +34,6 @@ public class BruiserAchievement extends Achievement {
 							true + " where userName = '" + currentPlayer.getUserName() + "'").execute();
 					
 				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} finally {
 					connection.close();

@@ -31,6 +31,7 @@ public class StatAchievementUpdater {
 	public void updatesFromRecentGame(String[] aJDBCParams) {
 		updateStats(aJDBCParams);
 		updateAchievements(aJDBCParams);
+		System.out.println();
 	}
 	
 	/**

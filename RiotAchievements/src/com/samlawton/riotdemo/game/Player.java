@@ -5,7 +5,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.samlawton.riotdemo.achievements.Achievement;
 import com.samlawton.riotdemo.achievements.BigWinnerAchievement;
@@ -18,7 +20,7 @@ public class Player {
 	private String mUserName;
 	public static final int NAME_IDX = 1;
 	
-	private long mUserCreateDate;
+	private String mUserCreateDate;
 	public static final int CREATE_DATE_IDX = 2;
 	
 	private int mTotalGames;
@@ -57,6 +59,8 @@ public class Player {
 	private long mTotalPlayTime;
 	public static final int TOTAL_PLAY_TIME_IDX = 14;
 	
+	//TODO: New player statistics must be given properties here and a DB index corresponding to the column
+	
 	private ArrayList<Achievement> mPlayerAchievements;
 	
 	public static final int SHARPSHOOTER_IDX = 0;
@@ -69,6 +73,7 @@ public class Player {
 	public static final int BRUISER_DB_IDX = BRUISER_IDX + ACHIEVEMENT_DB_OFFSET;
 	public static final int VETERAN_DB_IDX = VETERAN_IDX + ACHIEVEMENT_DB_OFFSET;
 	public static final int BIG_WINNER_DB_IDX = BIG_WINNER_IDX + ACHIEVEMENT_DB_OFFSET;
+	//TODO: New achievements must be given a DB_IDX and Player Array _IDX
 	
 	/**
 	 * Constructor that uses the default Game database
@@ -118,6 +123,7 @@ public class Player {
 		newAchievementList.add(new BruiserAchievement());
 		newAchievementList.add(new VeteranAchievement());
 		newAchievementList.add(new BigWinnerAchievement());
+		// TODO: New achievements must be added to Player Achievement List here.
 		return newAchievementList;
 	}
 	
@@ -161,7 +167,7 @@ public class Player {
             ResultSet playerRS = playerStmt.executeQuery();
             
             if(playerRS.next()) {
-            	mUserCreateDate = playerRS.getLong(CREATE_DATE_IDX);
+            	mUserCreateDate = playerRS.getString(CREATE_DATE_IDX);
 	            mTotalGames = playerRS.getInt(TOTAL_GAMES_IDX);
 	            mTotalWins = playerRS.getInt(TOTAL_WINS_IDX);
 	        	mTotalLosses = playerRS.getInt(TOTAL_LOSSES_IDX);
@@ -174,8 +180,9 @@ public class Player {
 	        	mTotalSpellsCast = playerRS.getInt(TOTAL_SPELLS_CAST_IDX);
 	        	mTotalSpellDmg = playerRS.getInt(TOTAL_SPELL_DMG_IDX);
 	        	mTotalPlayTime = playerRS.getLong(TOTAL_PLAY_TIME_IDX);
+	        	//TODO: New player statistics must be grabbed from DB here.
             } else {
-            	mUserCreateDate = System.currentTimeMillis();
+            	mUserCreateDate = DateFormat.getDateTimeInstance().format(new Date());
             	mTotalGames = 0;
 	            mTotalWins = 0;
 	        	mTotalLosses = 0;
@@ -188,6 +195,7 @@ public class Player {
 	        	mTotalSpellsCast = 0;
 	        	mTotalSpellDmg = 0;
 	        	mTotalPlayTime = 0;
+	        	//TODO: New player statistics must be initialized here
 	        	connection.prepareStatement("insert into players values ('" + aUserName + "','" +
 	        			mUserCreateDate + "','" +
 	        			mTotalGames + "','" +
@@ -202,6 +210,7 @@ public class Player {
 	        			mTotalSpellsCast + "','" +
 	        			mTotalSpellDmg + "','" +
 	        			mTotalPlayTime + "')").execute();
+	        			//TODO: New player statistics must be inserted into DB column here (column must already exist)
             }
             
             PreparedStatement achievementStmt = connection.prepareStatement("select * from playerAchievements where userName = '" + aUserName +"'");
@@ -221,10 +230,10 @@ public class Player {
             			mPlayerAchievements.get(BRUISER_IDX).getIsAchieved() + "," +
             			mPlayerAchievements.get(VETERAN_IDX).getIsAchieved() + "," +
             			mPlayerAchievements.get(BIG_WINNER_IDX).getIsAchieved() + ")").execute();
+            			// TODO: New player achievements must be initialized in achievement DB here.
             }
 			
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			if(connection != null) connection.close();
@@ -235,7 +244,7 @@ public class Player {
 	 * Uses non-database information to initialize player.
 	 */
 	private void initializePlayerWithoutDB() {
-		mUserCreateDate = System.currentTimeMillis();
+		mUserCreateDate = DateFormat.getDateTimeInstance().format(new Date());
 		mTotalGames = 0;
         mTotalWins = 0;
     	mTotalLosses = 0;
@@ -248,6 +257,7 @@ public class Player {
     	mTotalSpellsCast = 0;
     	mTotalSpellDmg = 0;
     	mTotalPlayTime = 0;
+    	//TODO: New player level stats must be initialized here.
     	
     	for(int i = 0; i < mPlayerAchievements.size(); i++) {
     		mPlayerAchievements.get(i).setIsAchieved(false);
@@ -259,7 +269,7 @@ public class Player {
 	 * account.
 	 * @return The date in a long format (millis)
 	 */
-	public long getUserCreateDate() {
+	public String getUserCreateDate() {
 		return mUserCreateDate;
 	}
 	
@@ -307,10 +317,9 @@ public class Player {
             		"totalSpellsCast=" + mTotalSpellsCast + "," +
             		"totalSpellDmg=" + mTotalSpellDmg + "," +
             		"totalPlayTime=" + mTotalPlayTime + " where userName = '" + mUserName + "'").execute();
-            
+            		//TODO: New player level stats must be updated in DB here.            
 			
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			if(connection != null) connection.close();
@@ -346,6 +355,8 @@ public class Player {
     	mTotalSpellsCast += aJustPlayed.getGameSpellsCast();
     	mTotalSpellDmg += aJustPlayed.getGameSpellDmg();
     	mTotalPlayTime += aJustPlayed.getGamePlayTime();
+    	
+    	//TODO: New player level statistics must be updated here by InGamePlayer
 	}
 	
 	/**
