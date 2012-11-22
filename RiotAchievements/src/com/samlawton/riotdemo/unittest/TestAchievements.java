@@ -628,7 +628,7 @@ public class TestAchievements {
 		System.out.println("Running Game 1:");
 		gameOne.runGame(jdbcParams);
 		
-		//gameOne.printAllStats();
+		gameOne.printAllStats();
 		
 		StatAchievementUpdater gameOneStats = new StatAchievementUpdater(gameOne);
 		gameOneStats.updatesFromRecentGame(jdbcParams);

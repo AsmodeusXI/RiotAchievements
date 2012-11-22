@@ -360,6 +360,34 @@ public class Player {
 	}
 	
 	/**
+	 * Prints out both the Player's stats and their
+	 * Achievement data.
+	 */
+	public void printAllHistoricalPlayerStats() {
+		printPlayersHistoricalStats();
+		printPlayersAchievementData();
+	}
+	
+	/**
+	 * Visual test method to check current Player's game stats
+	 */
+	public void printPlayersHistoricalStats() {
+		System.out.println("Player " + mUserName + "'s Historical Stats: ");
+		System.out.println("Attack Attempts: " + mTotalAtkAttempts);
+		System.out.println("Hit Percentage: " + mTotalHitNum);
+		System.out.println("Total Damage: " + mTotalDmg);
+		System.out.println("Kills: " + mTotalKills);
+		System.out.println("First Hit Kills: " + mTotalFirstHitKills);
+		System.out.println("Assists: " + mTotalAssists);
+		System.out.println("Spells Cast: " + mTotalSpellsCast);
+		System.out.println("Spell Damage: " + mTotalSpellDmg);
+		System.out.println("Total Game Time (millis): " + mTotalPlayTime);
+		System.out.println();
+		
+		// TODO: New player statistics must be added here for print out
+	}
+	
+	/**
 	 * Prints out the current Player's achievement Data.
 	 */
 	public void printPlayersAchievementData() {

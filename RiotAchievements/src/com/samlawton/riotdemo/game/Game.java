@@ -212,6 +212,10 @@ public class Game {
 		}
 	}
 	
+	/**
+	 * Runs the Game
+	 * @param aJDBCParams JDBC Parameters for Database interaction
+	 */
 	public void runGame(String[] aJDBCParams) {
 		
 		int totalKills = 0;
@@ -405,11 +409,18 @@ public class Game {
 		
 	}
 	
+	/**
+	 * Prints out both the Game's overall stats as
+	 * well as the stats for each InGamePlayer
+	 */
 	public void printAllStats() {
 		printGamePlayersStats();
 		printGameStats();
 	}
 	
+	/**
+	 * Prints out the stats for each InGamePlayer
+	 */
 	public void printGamePlayersStats() {
 		System.out.println("===================");
 		System.out.println("Blue Team Stats:");
@@ -426,6 +437,9 @@ public class Game {
 		}
 	}
 	
+	/**
+	 * Prints out the actual Game stats
+	 */
 	public void printGameStats() {
 		System.out.println("Game: " + mGameID);
 		System.out.println("Game Date: " + mGameDate);
@@ -660,6 +674,10 @@ public class Game {
 			aCurrentIGPlayer.setGameSpellDmg(2500);
 			aCurrentIGPlayer.setGamePlayTime(mGameLength);
 		}
+	}
+	
+	public void runRiotDemoGame() {
+		
 	}
 
 }
