@@ -25,7 +25,8 @@ public class Game {
 	public static final String jdbcUser = "sa";
 	public static final String jdbcPass = "";
 	public static final String dbName = "AchievementDB";
-	public static final String[] defaultJDBCParams = {jdbcDriver, jdbcString, jdbcUser, jdbcPass};
+	public static final String[] defaultJDBCParams = { jdbcDriver, jdbcString,
+			jdbcUser, jdbcPass };
 
 	private final String mGameID;
 	public static final int GAMEID_IDX = 1;
@@ -47,7 +48,7 @@ public class Game {
 	private int mGameWinner = 0;
 	public static final int VICTOR_IDX = 13;
 	public static final int LOSER_IDX = 14;
-	
+
 	private int mTotalKills = 0;
 	public static final int TOTAL_KILLS_IDX = 15;
 
@@ -71,8 +72,9 @@ public class Game {
 
 	private double mGameLength = 0.0;
 	public static final int GAME_LENGTH_IDX = 22;
-	
-	// TODO: New statistics require a new property and index corresponding to database column.
+
+	// TODO: New statistics require a new property and index corresponding to
+	// database column.
 
 	public Game(ArrayList<Player> aPlayerList) {
 		this(aPlayerList, null);
@@ -86,21 +88,22 @@ public class Game {
 	 *            ArrayList of Players in current Game
 	 */
 	public Game(ArrayList<Player> aPlayerList, String[] aJDBCParams) {
-		
+
 		// Ensure there are at least 6 and no more than 10 players.
-		if(aPlayerList.size() > 10 && aPlayerList.size() < 6) {
-			System.err.println("There are too many or two few players. Exiting...");
+		if (aPlayerList.size() > 10 && aPlayerList.size() < 6) {
+			System.err
+					.println("There are too many or two few players. Exiting...");
 			System.exit(1);
 		}
-		
+
 		// If Player Number is odd, kick one for even teams.
-		if(aPlayerList.size() % 2 != 0) {
+		if (aPlayerList.size() % 2 != 0) {
 			System.err.println("Odd number of Players! Kicking final Player.");
-			aPlayerList.remove(aPlayerList.size()-1);
+			aPlayerList.remove(aPlayerList.size() - 1);
 		}
-		
+
 		mPlayerList = aPlayerList;
-		
+
 		mGameID = "Game" + aPlayerList.hashCode() + System.currentTimeMillis();
 		mGameDate = DateFormat.getDateTimeInstance().format(new Date());
 		if (aJDBCParams != null) {
@@ -112,6 +115,7 @@ public class Game {
 
 	/**
 	 * An overall initialization method for the Game object.
+	 * 
 	 * @param aJDBCParams
 	 */
 	private void init(String[] aJDBCParams) {
@@ -172,8 +176,8 @@ public class Game {
 
 				connection.prepareStatement(
 						"insert into games values('" + mGameID + "','"
-								+ mGameDate + "','" + insertNames.get(0) + "','"
-								+ insertNames.get(1) + "','"
+								+ mGameDate + "','" + insertNames.get(0)
+								+ "','" + insertNames.get(1) + "','"
 								+ insertNames.get(2) + "','"
 								+ insertNames.get(3) + "','"
 								+ insertNames.get(4) + "','"
@@ -182,12 +186,12 @@ public class Game {
 								+ insertNames.get(7) + "','"
 								+ insertNames.get(8) + "','"
 								+ insertNames.get(9) + "'," + mGameWinner + ","
-								+ mGameWinner + "," + mTotalKills + "," + mBlueTeamKills + ","
-								+ mPurpleTeamKills + "," + mBlueAssists + ","
-								+ mPurpleAssists + ",'" + mFirstBloodTeam
-								+ "','" + mFirstBloodPlayer + "',"
-								+ mGameLength + ")").execute();
-								// TODO: New game level statistics require a new value insert.
+								+ mGameWinner + "," + mTotalKills + ","
+								+ mBlueTeamKills + "," + mPurpleTeamKills + ","
+								+ mBlueAssists + "," + mPurpleAssists + ",'"
+								+ mFirstBloodTeam + "','" + mFirstBloodPlayer
+								+ "'," + mGameLength + ")").execute();
+				// TODO: New game level statistics require a new value insert.
 
 				for (int i = 0; i < insertNames.size(); i++) {
 					String currentUserName = insertNames.get(i);
@@ -200,7 +204,6 @@ public class Game {
 				}
 
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} finally {
 				if (connection != null)
@@ -211,13 +214,27 @@ public class Game {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	/**
-	 * Runs the Game
-	 * @param aJDBCParams JDBC Parameters for Database interaction
+	 * Runs the Game without any test parameters.
+	 * 
+	 * @param aJDBCParams
+	 *            JDBC Parameters for Database interaction
 	 */
 	public void runGame(String[] aJDBCParams) {
-		
+		runGame(aJDBCParams, false);
+	}
+
+	/**
+	 * Runs the Game including test parameters.
+	 * 
+	 * @param aJDBCParams
+	 *            JDBC Parameters for Database interaction
+	 * @param aDemoString
+	 *            String indicating Demo status
+	 */
+	public void runGame(String[] aJDBCParams, boolean aIsDemo) {
+
 		int totalKills = 0;
 		int totalBlueKills = 0;
 		int totalPurpleKills = 0;
@@ -225,42 +242,48 @@ public class Game {
 		int totalPurpleAssists = 0;
 		String victorTeam = "";
 		String loserTeam = "";
-		
-		// TODO: New game level statistics must be set in this method (somewhere, depending on how stat is used)
-		
+
+		// TODO: New game level statistics must be set in this method
+		// (somewhere, depending on how stat is used)
+
 		/*
 		 * Updates initial stats that help determine the rest.
 		 */
-		for(Map.Entry<Player,InGamePlayer> currentPlayerKV : mInGameMap.entrySet()) {
+		for (Map.Entry<Player, InGamePlayer> currentPlayerKV : mInGameMap
+				.entrySet()) {
 			InGamePlayer currentIGPlayer = currentPlayerKV.getValue();
-			recordPrimaryGameStatistics(currentIGPlayer);
-			
+			recordPrimaryGameStatistics(currentIGPlayer, aIsDemo);
+
 			int playerKills = currentIGPlayer.getGameKills();
-			
+
 			totalKills += playerKills;
-			if(currentIGPlayer.getCurrentTeam() == BLUE_TEAM_IDX) {
+			if (currentIGPlayer.getCurrentTeam() == BLUE_TEAM_IDX) {
 				totalBlueKills += playerKills;
 			} else {
 				totalPurpleKills += playerKills;
 			}
 		}
-		
+
 		mTotalKills = totalKills;
 		mBlueTeamKills = totalBlueKills;
 		mPurpleTeamKills = totalPurpleKills;
 		mGameLength = totalKills * 200.0;
-		
-		if(totalBlueKills > totalPurpleKills) {
+
+		if(aIsDemo) {
 			mGameWinner = BLUE_TEAM_IDX;
-		} else if (totalPurpleKills > totalBlueKills) {
-			mGameWinner = PURPLE_TEAM_IDX;
 		} else {
-			System.out.println("Uh-oh! It was a tie! COIN FLIP TIME!!");
-			Random coinFlipRand = new Random();
-			mGameWinner = coinFlipRand.nextInt(1);
+			if (totalBlueKills > totalPurpleKills) {
+				mGameWinner = BLUE_TEAM_IDX;
+			} else if (totalPurpleKills > totalBlueKills) {
+				mGameWinner = PURPLE_TEAM_IDX;
+			} else {
+				System.out.println("Uh-oh! It was a tie! COIN FLIP TIME!!");
+				Random coinFlipRand = new Random();
+				mGameWinner = coinFlipRand.nextInt(1);
+			}
 		}
-		
-		if(mGameWinner == BLUE_TEAM_IDX) {
+
+		if (mGameWinner == BLUE_TEAM_IDX) {
 			System.out.println("Blue Team Wins! \n");
 			victorTeam = "BLUE";
 			loserTeam = "PURPLE";
@@ -269,121 +292,162 @@ public class Game {
 			victorTeam = "PURPLE";
 			loserTeam = "BLUE";
 		}
-		
+
 		/*
 		 * Secondary stats are Assists and Game Length, which are both
-		 * calculated from total kills and MUST be done after those stats
-		 * are collected.
+		 * calculated from total kills and MUST be done after those stats are
+		 * collected.
 		 */
-		for(Map.Entry<Player,InGamePlayer> currentPlayerKV : mInGameMap.entrySet()) {
+		for (Map.Entry<Player, InGamePlayer> currentPlayerKV : mInGameMap
+				.entrySet()) {
 			InGamePlayer currentIGPlayer = currentPlayerKV.getValue();
-			recordSecondaryGameStatistics(currentIGPlayer);
-			
-			if(currentIGPlayer.getCurrentTeam() == BLUE_TEAM_IDX) {
+			recordSecondaryGameStatistics(currentIGPlayer, aIsDemo);
+
+			if (currentIGPlayer.getCurrentTeam() == BLUE_TEAM_IDX) {
 				totalBlueAssists += currentIGPlayer.getGameAssists();
 			} else {
 				totalPurpleAssists += currentIGPlayer.getGameAssists();
 			}
 		}
-		
+
 		mBlueAssists = totalBlueAssists;
 		mPurpleAssists = totalPurpleAssists;
-		
+
 		/*
-		 * Then we randomly determine first blood (as long
-		 * as Player has kills).
+		 * Then we randomly determine first blood (as long as Player has kills).
 		 */
-		
+
 		Random fbRand = new Random();
 		String firstBloodPick = "";
 		int firstBloodTeam = -1;
 		Object[] igpArray = mInGameMap.values().toArray();
-		
-		while(firstBloodPick.isEmpty()) {
-			InGamePlayer firstBloodPotential = (InGamePlayer) igpArray[fbRand.nextInt(igpArray.length)];
-			if(firstBloodPotential.getGameKills() > 0) {
-				firstBloodPick = firstBloodPotential.getPlayerRep().getUserName();
-				firstBloodTeam = firstBloodPotential.getCurrentTeam();
+
+		while (firstBloodPick.isEmpty()) {
+			InGamePlayer firstBloodPotential = (InGamePlayer) igpArray[fbRand
+					.nextInt(igpArray.length)];
+			if (aIsDemo) {
+				if(firstBloodPotential.getPlayerRep().getUserName().equals("Lulu")) {
+					firstBloodPotential.setFirstBlood(true);
+					firstBloodPick = firstBloodPotential.getPlayerRep().getUserName();
+					firstBloodTeam = firstBloodPotential.getCurrentTeam();
+				}
+			} else {
+				if (firstBloodPotential.getGameKills() > 0) {
+					firstBloodPotential.setFirstBlood(true);
+					firstBloodPick = firstBloodPotential.getPlayerRep()
+							.getUserName();
+					firstBloodTeam = firstBloodPotential.getCurrentTeam();
+				}
 			}
 		}
-		
+
 		mFirstBloodPlayer = firstBloodPick;
-		if(firstBloodTeam == BLUE_TEAM_IDX) {
+		if (firstBloodTeam == BLUE_TEAM_IDX) {
 			mFirstBloodTeam = "BLUE";
 		} else if (firstBloodTeam == PURPLE_TEAM_IDX) {
 			mFirstBloodTeam = "PURPLE";
 		} else {
 			System.err.println("This should never happen");
 		}
-		
+
 		/*
 		 * All stats determined! Update Game entry in database!
 		 */
-		
+
 		try {
-			
+
 			Connection connection = null;
-			
-			String currentDriver = aJDBCParams[0] == null ? Game.jdbcDriver : aJDBCParams[0];
-			String currentJDBCURL = aJDBCParams[1] == null ? Game.jdbcString : aJDBCParams[1];
-			String currentUser = aJDBCParams[2] == null ? Game.jdbcUser : aJDBCParams[2];
-			String currentPass = aJDBCParams[3] == null ? Game.jdbcPass : aJDBCParams[3];
-			
+
+			String currentDriver = aJDBCParams[0] == null ? Game.jdbcDriver
+					: aJDBCParams[0];
+			String currentJDBCURL = aJDBCParams[1] == null ? Game.jdbcString
+					: aJDBCParams[1];
+			String currentUser = aJDBCParams[2] == null ? Game.jdbcUser
+					: aJDBCParams[2];
+			String currentPass = aJDBCParams[3] == null ? Game.jdbcPass
+					: aJDBCParams[3];
+
 			try {
-				
+
 				Class.forName(currentDriver);
-				
-				connection = DriverManager.getConnection(currentJDBCURL, currentUser, currentPass);
-				
-				connection.prepareStatement("update games set " +
-						"victor = '" + victorTeam + "'," +
-						"loser = '" + loserTeam + "'," +
-						"totalKills = " + mTotalKills + "," +
-						"blueKills = " + mBlueTeamKills + "," +
-						"purpleKills = " + mPurpleTeamKills + "," +
-						"blueAssists = " + mBlueAssists + "," +
-						"purpleAssists = " + mPurpleAssists + "," +
-						"firstBloodTeam = '" + mFirstBloodTeam + "'," +
-						"firstBloodPlayer = '" + mFirstBloodPlayer + "'," +
-						"gameLength = " + mGameLength +
-						" where gameID = '" + mGameID + "'").execute();
-						// TODO: New game level statistics must be updated here.
-				
+
+				connection = DriverManager.getConnection(currentJDBCURL,
+						currentUser, currentPass);
+
+				connection.prepareStatement(
+						"update games set " + "victor = '" + victorTeam + "',"
+								+ "loser = '" + loserTeam + "',"
+								+ "totalKills = " + mTotalKills + ","
+								+ "blueKills = " + mBlueTeamKills + ","
+								+ "purpleKills = " + mPurpleTeamKills + ","
+								+ "blueAssists = " + mBlueAssists + ","
+								+ "purpleAssists = " + mPurpleAssists + ","
+								+ "firstBloodTeam = '" + mFirstBloodTeam + "',"
+								+ "firstBloodPlayer = '" + mFirstBloodPlayer
+								+ "'," + "gameLength = " + mGameLength
+								+ " where gameID = '" + mGameID + "'")
+						.execute();
+				// TODO: New game level statistics must be updated here.
+
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			} finally {
 				connection.close();
 			}
-			
-		} catch(SQLException ex) {
+
+		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
-		
+
 	}
-	
-	private void recordPrimaryGameStatistics(InGamePlayer aCurrentIGPlayer) {
-		
+
+	/**
+	 * Records the initial (random) statistics for any randomly run game.
+	 * 
+	 * @param aCurrentIGPlayer
+	 *            The InGamePlayer for which the stats are being updated
+	 */
+	private void recordPrimaryGameStatistics(InGamePlayer aCurrentIGPlayer, boolean aIsDemo) {
+
 		Random statRand = new Random();
-		
+
 		// A given player might attack between 60 and 90 times a game.
 		int randAtkAttempts = 60 + statRand.nextInt(30);
 		// They will hit a random percentage of those attacks.
 		double randHitNum = statRand.nextDouble();
 		// Damage is attempts * percent hit * 50 damage per attack.
-		int gameDmg = (int)(randAtkAttempts * randHitNum) * 50;
+		int gameDmg = (int) (randAtkAttempts * randHitNum) * 50;
 		// Kills are damage / 1000
 		int gameKills = gameDmg / 300;
 		// First hit kills are random number of the kills in total
 		int gameFirstHitKills = 0;
-		if(gameKills > 0) {
+		if (gameKills > 0) {
 			gameFirstHitKills = statRand.nextInt(gameKills);
 		}
 		// Spells cast are a random percent of attack attempts
 		double spellsPercent = statRand.nextDouble();
-		int spellsCast = (int)(randAtkAttempts * spellsPercent);
+		int spellsCast = (int) (randAtkAttempts * spellsPercent);
 		// Spell damage is an equal percent of total game damage
-		int spellDamage = (int)(gameDmg * spellsPercent);
+		int spellDamage = (int) (gameDmg * spellsPercent);
 		
+		/**
+		 * Only use these settings if we are in the RiotDemo scenario. These 
+		 * ruin the internal consistency of the "stats" but it's a demo, so that's 
+		 * fine.
+		 */
+		if(aIsDemo) {
+			String currentDemoPlayer = aCurrentIGPlayer.getPlayerRep().getUserName();
+			if(currentDemoPlayer.equals("Leona")) {
+				// Will get win out of hand for Big Winner.
+			} else if (currentDemoPlayer.equals("Diana")) {
+				// Will get Veteran out of hand due to run Game
+			} else if (currentDemoPlayer.equals("Irelia")) {
+				randHitNum = 0.9;
+			} else if (currentDemoPlayer.equals("Riven")) {
+				gameDmg = 550;
+			}
+		}
+
 		aCurrentIGPlayer.setGameAtkAttempts(randAtkAttempts);
 		aCurrentIGPlayer.setGameHitNum(randHitNum * 100);
 		aCurrentIGPlayer.setGameDmg(gameDmg);
@@ -392,32 +456,39 @@ public class Game {
 		aCurrentIGPlayer.setGameSpellsCast(spellsCast);
 		aCurrentIGPlayer.setGameSpellDmg(spellDamage);
 	}
-	
-	private void recordSecondaryGameStatistics(InGamePlayer aCurrentIGPlayer) {
-		
+
+	/**
+	 * Sets secondary game statistics for each InGamePlayer based on results
+	 * from the initial statistics
+	 * 
+	 * @param aCurrentIGPlayer
+	 *            The InGamePlayer for which the stats are being updated.
+	 */
+	private void recordSecondaryGameStatistics(InGamePlayer aCurrentIGPlayer, boolean aIsDemo) {
+
 		Random statRand = new Random();
-		
+
 		aCurrentIGPlayer.determineGameVictory();
-		
-		if(aCurrentIGPlayer.getCurrentTeam() == BLUE_TEAM_IDX) {
+
+		if (aCurrentIGPlayer.getCurrentTeam() == BLUE_TEAM_IDX) {
 			aCurrentIGPlayer.setGameAssists(statRand.nextInt(mBlueTeamKills));
 		} else {
 			aCurrentIGPlayer.setGameAssists(statRand.nextInt(mPurpleTeamKills));
 		}
-		
+
 		aCurrentIGPlayer.setGamePlayTime(mGameLength);
-		
+
 	}
-	
+
 	/**
-	 * Prints out both the Game's overall stats as
-	 * well as the stats for each InGamePlayer
+	 * Prints out both the Game's overall stats as well as the stats for each
+	 * InGamePlayer
 	 */
 	public void printAllStats() {
 		printGamePlayersStats();
 		printGameStats();
 	}
-	
+
 	/**
 	 * Prints out the stats for each InGamePlayer
 	 */
@@ -425,41 +496,45 @@ public class Game {
 		System.out.println("===================");
 		System.out.println("Blue Team Stats:");
 		System.out.println("=================== \n");
-		for(int i = 0; i < mBlueTeamPlayerList.size(); i++) {
+		for (int i = 0; i < mBlueTeamPlayerList.size(); i++) {
 			mBlueTeamPlayerList.get(i).printPlayersGameStats();
 		}
-		
+
 		System.out.println("===================");
 		System.out.println("Purple Team Stats:");
 		System.out.println("=================== \n");
-		for(int i = 0; i < mPurpleTeamPlayerList.size(); i++) {
+		for (int i = 0; i < mPurpleTeamPlayerList.size(); i++) {
 			mPurpleTeamPlayerList.get(i).printPlayersGameStats();
 		}
 	}
-	
+
 	/**
 	 * Prints out the actual Game stats
 	 */
 	public void printGameStats() {
 		System.out.println("Game: " + mGameID);
 		System.out.println("Game Date: " + mGameDate);
-		
+
 		System.out.println("Blue Team Players: ");
-		for(int i = 0; i < mBlueTeamPlayerList.size(); i++) {
-			System.out.println("\t - " + mBlueTeamPlayerList.get(i).getPlayerRep().getUserName());
+		for (int i = 0; i < mBlueTeamPlayerList.size(); i++) {
+			System.out.println("\t - "
+					+ mBlueTeamPlayerList.get(i).getPlayerRep().getUserName());
 		}
-		
+
 		System.out.println("Purple Team Players: ");
-		for(int i = 0; i < mPurpleTeamPlayerList.size(); i++) {
-			System.out.println("\t - " + mPurpleTeamPlayerList.get(i).getPlayerRep().getUserName());
+		for (int i = 0; i < mPurpleTeamPlayerList.size(); i++) {
+			System.out
+					.println("\t - "
+							+ mPurpleTeamPlayerList.get(i).getPlayerRep()
+									.getUserName());
 		}
-		
-		if(mGameWinner == BLUE_TEAM_IDX) {
+
+		if (mGameWinner == BLUE_TEAM_IDX) {
 			System.out.println("Blue was victorious.");
 		} else {
 			System.out.println("Purple was victorious.");
 		}
-		
+
 		System.out.println("Total kills: " + mTotalKills);
 		System.out.println("Blue Team kills: " + mBlueTeamKills);
 		System.out.println("Purple Team kills: " + mPurpleTeamKills);
@@ -468,8 +543,8 @@ public class Game {
 		System.out.println("First Blood Player: " + mFirstBloodPlayer);
 		System.out.println("First Blood Team: " + mFirstBloodTeam);
 		System.out.println("Game Length: " + mGameLength);
-		
-		//TODO: New game level statistics should be added here to be printed.
+
+		// TODO: New game level statistics should be added here to be printed.
 	}
 
 	/**
@@ -675,9 +750,9 @@ public class Game {
 			aCurrentIGPlayer.setGamePlayTime(mGameLength);
 		}
 	}
-	
+
 	public void runRiotDemoGame() {
-		
+
 	}
 
 }

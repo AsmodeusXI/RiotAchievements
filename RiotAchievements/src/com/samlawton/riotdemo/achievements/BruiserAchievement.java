@@ -13,45 +13,55 @@ public class BruiserAchievement extends Achievement {
 	public BruiserAchievement() {
 		mAchievementName = "Bruiser";
 	}
-	
+
 	@Override
-	public void update(Player currentPlayer, InGamePlayer currentInGamePlayer, String[] aJDBCParams) {
-		if(currentInGamePlayer.getGameDmg() > 500) {
+	public void update(Player currentPlayer, InGamePlayer currentInGamePlayer,
+			String[] aJDBCParams) {
+		if (currentInGamePlayer.getGameDmg() > 500) {
 			this.setIsAchievedAtEnd(true, currentPlayer.getUserName());
-			
+
 			try {
-				
+
 				Connection connection = null;
-				
-				String currentDriver = aJDBCParams[0] == null ? Game.jdbcDriver : aJDBCParams[0];
-				String currentJDBCURL = aJDBCParams[1] == null ? Game.jdbcString : aJDBCParams[1];
-				String currentUser = aJDBCParams[2] == null ? Game.jdbcUser : aJDBCParams[2];
-				String currentPass = aJDBCParams[3] == null ? Game.jdbcPass : aJDBCParams[3];
-				
+
+				String currentDriver = aJDBCParams[0] == null ? Game.jdbcDriver
+						: aJDBCParams[0];
+				String currentJDBCURL = aJDBCParams[1] == null ? Game.jdbcString
+						: aJDBCParams[1];
+				String currentUser = aJDBCParams[2] == null ? Game.jdbcUser
+						: aJDBCParams[2];
+				String currentPass = aJDBCParams[3] == null ? Game.jdbcPass
+						: aJDBCParams[3];
+
 				try {
-					
+
 					Class.forName(currentDriver);
-					
-					connection = DriverManager.getConnection(currentJDBCURL, currentUser, currentPass);
-					
-					connection.prepareStatement("update playerAchievements set ABruiser = " +
-							true + " where userName = '" + currentPlayer.getUserName() + "'").execute();
-					
+
+					connection = DriverManager.getConnection(currentJDBCURL,
+							currentUser, currentPass);
+
+					connection.prepareStatement(
+							"update playerAchievements set ABruiser = " + true
+									+ " where userName = '"
+									+ currentPlayer.getUserName() + "'")
+							.execute();
+
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				} finally {
 					connection.close();
 				}
-				
-			} catch(SQLException ex) {
-				
+
+			} catch (SQLException ex) {
+
 			}
 		}
 	}
 
 	@Override
 	public void printVictoryMessage(String aUserName) {
-		System.out.println("Congratulations, " + aUserName + "! You have earned Achievement: Bruiser!");
+		System.out.println("Congratulations, " + aUserName
+				+ "! You have earned Achievement: Bruiser!");
 	}
 
 }

@@ -12,6 +12,7 @@ public class InGamePlayer {
 	private int mGameSpellDmg = 0;
 	private double mGamePlayTime = 0;
 	private boolean mGameWin = false;
+	private boolean mGameFirstBlood = false;
 	
 	private final Player mCurrentPlayer;
 	private final Game mCurrentGame;
@@ -66,6 +67,9 @@ public class InGamePlayer {
 		System.out.println("Spells Cast: " + mGameSpellsCast);
 		System.out.println("Spell Damage: " + mGameSpellDmg);
 		System.out.println("Total Game Time (millis): " + mGamePlayTime);
+		if(mGameFirstBlood) {
+			System.out.println(mCurrentPlayer.getUserName() + " scored First Blood!");
+		}
 		System.out.println();
 		
 		// TODO: New player statistics must be added here for print out
@@ -168,5 +172,13 @@ public class InGamePlayer {
 
 	public boolean isGameWin() {
 		return mGameWin;
+	}
+	
+	public void setFirstBlood(boolean aFirstBlood) {
+		mGameFirstBlood = aFirstBlood;
+	}
+	
+	public boolean getFirstBlood() {
+		return mGameFirstBlood;
 	}
 }

@@ -76,7 +76,8 @@ public class TestAchievements {
 								+ "totalAssists integer, "
 								+ "totalSpellsCast integer, "
 								+ "totalSpellDmg integer, "
-								+ "totalPlayTime double " + ");").execute();
+								+ "totalPlayTime double, " 
+								+ "totalFirstBloods" + ");").execute();
 								//TODO: New player properties require an added column
 
 				createEnv.prepareStatement(
@@ -116,7 +117,8 @@ public class TestAchievements {
 										+ "ASharpshooter boolean,"
 										+ "ABruiser boolean,"
 										+ "AVeteran boolean,"
-										+ "ABigWinner boolean)").execute();
+										+ "ABigWinner boolean,"
+										+ "AShootsFirst boolean);").execute();
 										// TODO: New achievements require a new boolean column
 
 			} catch (ClassNotFoundException e) {

@@ -13,6 +13,7 @@ import com.samlawton.riotdemo.achievements.Achievement;
 import com.samlawton.riotdemo.achievements.BigWinnerAchievement;
 import com.samlawton.riotdemo.achievements.BruiserAchievement;
 import com.samlawton.riotdemo.achievements.SharpshooterAchievement;
+import com.samlawton.riotdemo.achievements.ShootsFirstAchievement;
 import com.samlawton.riotdemo.achievements.VeteranAchievement;
 
 public class Player {
@@ -59,6 +60,9 @@ public class Player {
 	private long mTotalPlayTime;
 	public static final int TOTAL_PLAY_TIME_IDX = 14;
 	
+	private int mTotalFirstBloods;
+	public static final int TOTAL_FIRST_BLOOD_IDX = 15;
+	
 	//TODO: New player statistics must be given properties here and a DB index corresponding to the column
 	
 	private ArrayList<Achievement> mPlayerAchievements;
@@ -67,12 +71,14 @@ public class Player {
 	public static final int BRUISER_IDX = 1;
 	public static final int VETERAN_IDX = 2;
 	public static final int BIG_WINNER_IDX = 3;
+	public static final int SHOOTS_FIRST_IDX = 4;
 	
 	public static final int ACHIEVEMENT_DB_OFFSET = 3;
 	public static final int SHARPSHOOTER_DB_IDX = SHARPSHOOTER_IDX + ACHIEVEMENT_DB_OFFSET;
 	public static final int BRUISER_DB_IDX = BRUISER_IDX + ACHIEVEMENT_DB_OFFSET;
 	public static final int VETERAN_DB_IDX = VETERAN_IDX + ACHIEVEMENT_DB_OFFSET;
 	public static final int BIG_WINNER_DB_IDX = BIG_WINNER_IDX + ACHIEVEMENT_DB_OFFSET;
+	public static final int SHOOTS_FIRST_DB_IDX = SHOOTS_FIRST_IDX + ACHIEVEMENT_DB_OFFSET;
 	//TODO: New achievements must be given a DB_IDX and Player Array _IDX
 	
 	/**
@@ -94,7 +100,7 @@ public class Player {
 		
 		mPlayerAchievements = initAchievements();
 		
-		if(aUserName.contains(" ") || aUserName.contains(";") || aUserName.contains("/")) {
+		if(aUserName.contains(" ") || aUserName.contains(";") || aUserName.contains("/") || aUserName.contains("'")) {
 			System.out.println("Error! Player name is invalid!");
 			System.exit(1);
 		}
@@ -123,6 +129,7 @@ public class Player {
 		newAchievementList.add(new BruiserAchievement());
 		newAchievementList.add(new VeteranAchievement());
 		newAchievementList.add(new BigWinnerAchievement());
+		newAchievementList.add(new ShootsFirstAchievement());
 		// TODO: New achievements must be added to Player Achievement List here.
 		return newAchievementList;
 	}
@@ -180,6 +187,7 @@ public class Player {
 	        	mTotalSpellsCast = playerRS.getInt(TOTAL_SPELLS_CAST_IDX);
 	        	mTotalSpellDmg = playerRS.getInt(TOTAL_SPELL_DMG_IDX);
 	        	mTotalPlayTime = playerRS.getLong(TOTAL_PLAY_TIME_IDX);
+	        	mTotalFirstBloods = playerRS.getInt(TOTAL_FIRST_BLOOD_IDX);
 	        	//TODO: New player statistics must be grabbed from DB here.
             } else {
             	mUserCreateDate = DateFormat.getDateTimeInstance().format(new Date());
@@ -195,6 +203,7 @@ public class Player {
 	        	mTotalSpellsCast = 0;
 	        	mTotalSpellDmg = 0;
 	        	mTotalPlayTime = 0;
+	        	mTotalFirstBloods = 0;
 	        	//TODO: New player statistics must be initialized here
 	        	connection.prepareStatement("insert into players values ('" + aUserName + "','" +
 	        			mUserCreateDate + "'," +
@@ -209,7 +218,8 @@ public class Player {
 	        			mTotalAssists + "," +
 	        			mTotalSpellsCast + "," +
 	        			mTotalSpellDmg + "," +
-	        			mTotalPlayTime + ")").execute();
+	        			mTotalPlayTime + "," +
+	        			mTotalFirstBloods + ")").execute();
 	        			//TODO: New player statistics must be inserted into DB column here (column must already exist)
             }
             
@@ -229,7 +239,8 @@ public class Player {
             			mPlayerAchievements.get(SHARPSHOOTER_IDX).getIsAchieved() + "," +
             			mPlayerAchievements.get(BRUISER_IDX).getIsAchieved() + "," +
             			mPlayerAchievements.get(VETERAN_IDX).getIsAchieved() + "," +
-            			mPlayerAchievements.get(BIG_WINNER_IDX).getIsAchieved() + ")").execute();
+            			mPlayerAchievements.get(BIG_WINNER_IDX).getIsAchieved() + "," +
+            			mPlayerAchievements.get(SHOOTS_FIRST_IDX).getIsAchieved() + ")").execute();
             			// TODO: New player achievements must be initialized in achievement DB here.
             }
 			
@@ -257,6 +268,7 @@ public class Player {
     	mTotalSpellsCast = 0;
     	mTotalSpellDmg = 0;
     	mTotalPlayTime = 0;
+    	mTotalFirstBloods = 0;
     	//TODO: New player level stats must be initialized here.
     	
     	for(int i = 0; i < mPlayerAchievements.size(); i++) {
@@ -316,7 +328,8 @@ public class Player {
             		"totalAssists=" + mTotalAssists + "," +
             		"totalSpellsCast=" + mTotalSpellsCast + "," +
             		"totalSpellDmg=" + mTotalSpellDmg + "," +
-            		"totalPlayTime=" + mTotalPlayTime + " where userName = '" + mUserName + "'").execute();
+            		"totalPlayTime=" + mTotalPlayTime + "," +
+            		"totalFirstBloods=" + mTotalFirstBloods + " where userName = '" + mUserName + "'").execute();
             		//TODO: New player level stats must be updated in DB here.            
 			
 		} catch (ClassNotFoundException e) {
@@ -355,6 +368,7 @@ public class Player {
     	mTotalSpellsCast += aJustPlayed.getGameSpellsCast();
     	mTotalSpellDmg += aJustPlayed.getGameSpellDmg();
     	mTotalPlayTime += aJustPlayed.getGamePlayTime();
+    	mTotalFirstBloods += aJustPlayed.getFirstBlood() ? 1 : 0;
     	
     	//TODO: New player level statistics must be updated here by InGamePlayer
 	}
@@ -382,6 +396,7 @@ public class Player {
 		System.out.println("Spells Cast: " + mTotalSpellsCast);
 		System.out.println("Spell Damage: " + mTotalSpellDmg);
 		System.out.println("Total Game Time (millis): " + mTotalPlayTime);
+		System.out.println("Total First Bloods: " + mTotalFirstBloods);
 		System.out.println();
 		
 		// TODO: New player statistics must be added here for print out
@@ -440,6 +455,10 @@ public class Player {
 	 */
 	public ArrayList<Achievement> getPlayerAchievements() {
 		return mPlayerAchievements;
+	}
+	
+	public int getFirstBloods() {
+		return mTotalFirstBloods;
 	}
 
 	@Override

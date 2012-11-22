@@ -2,3 +2,7 @@
 /AchievementDB.log
 /AchievementDB.properties
 /AchievementDB.script
+/testdb.tmp
+/testdb.log
+/testdb.properties
+/testdb.script

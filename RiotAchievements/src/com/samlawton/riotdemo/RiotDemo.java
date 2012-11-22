@@ -10,6 +10,7 @@ import java.util.Date;
 
 import org.hsqldb.Server;
 
+import com.samlawton.riotdemo.achievements.StatAchievementUpdater;
 import com.samlawton.riotdemo.game.Game;
 import com.samlawton.riotdemo.game.Player;
 
@@ -19,6 +20,12 @@ public class RiotDemo {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
+		System.out.println("By the end of this demo, \nLeona should have the 'Big Winner' achievement,\n" +
+				"Diana should have the 'Veteran' achievement,\nIrelia should have the 'Sharpshooter' achievement,\n" +
+				"and Riven should have the 'Bruiser' achievement.\n" +
+				"Other players may get other achievements, but those are ancillary.\nLet's go!");
+		System.out.println();
 		
 		Server hsqlServer = null;
         try {
@@ -58,13 +65,13 @@ public class RiotDemo {
 				
 				connection = DriverManager.getConnection(Game.jdbcString, Game.jdbcUser, Game.jdbcPass);
 				
-				// Leona - Will get Big Winner Achievement (has Sharpshooter/Bruiser)
+				// Leona - Will get Big Winner Achievement (has Sharpshooter/Bruiser/Shoots First)
 				// Everything else is more or less randomized.
 				connection.prepareStatement("insert into players values ('" + "Leona" + "','" +
 						DateFormat.getDateTimeInstance().format(new Date()) + "'," +
-	        			750 + "," +
-	        			499 + "," +	//needs 500th win
-	        			251 + "," +
+	        			449 + "," +
+	        			199 + "," +	//needs 200th win
+	        			250 + "," +
 	        			200000 + "," +
 	        			80.0 + "," +
 	        			30000000 + "," +
@@ -73,16 +80,18 @@ public class RiotDemo {
 	        			800 + "," +
 	        			100000 + "," +
 	        			2000000 + "," +
-	        			1000000 + ")").execute();
+	        			1000000 + "," +
+	        			50 + ")").execute();
 				
 				connection.prepareStatement("insert into playerAchievements values (NULL,'" +
             			"Leona" + "'," +
             			true + "," +
             			true + "," +
             			false + "," +
-            			false + ")").execute();
+            			false + "," +
+            			true + ")").execute();
 				
-				// Diana - Will get Veteran Achievement (has Big Winner/Sharpshooter/Bruiser)
+				// Diana - Will get Veteran Achievement (has Big Winner/Sharpshooter/Bruiser/Shoots First)
 				// Everything else is more or less randomized.
 				connection.prepareStatement("insert into players values ('" + "Diana" + "','" +
 						DateFormat.getDateTimeInstance().format(new Date()) + "'," +
@@ -97,16 +106,18 @@ public class RiotDemo {
 	        			456 + "," +
 	        			100000 + "," +
 	        			2000000 + "," +
-	        			1000000 + ")").execute();
+	        			1000000 + "," +
+	        			50 + ")").execute();
 				
 				connection.prepareStatement("insert into playerAchievements values (NULL,'" +
             			"Diana" + "'," +
             			true + "," +
             			true + "," +
             			false + "," +
+            			true + "," +
             			true + ")").execute();
 				
-				// Irelia - Will get Sharpshooter Achievement (has Bruiser)
+				// Irelia - Will get Sharpshooter Achievement (has Bruiser/Shoots First)
 				// Everything else is more or less randomized.
 				connection.prepareStatement("insert into players values ('" + "Irelia" + "','" +
 						DateFormat.getDateTimeInstance().format(new Date()) + "'," +
@@ -121,14 +132,16 @@ public class RiotDemo {
 	        			400 + "," +
 	        			50 + "," +
 	        			250 + "," +
-	        			50000 + ")").execute();
+	        			50000 + "," +
+	        			10 + ")").execute();
 				
 				connection.prepareStatement("insert into playerAchievements values (NULL,'" +
             			"Irelia" + "'," +
             			false + "," +
             			true + "," +
             			false + "," +
-            			false + ")").execute();
+            			false + "," +
+            			true + ")").execute();
 				
 				// Riven - Will get Bruiser Achievement [at least] (has n/a)
 				// Everything else is more or less randomized.
@@ -145,10 +158,38 @@ public class RiotDemo {
 	        			400 + "," +
 	        			50 + "," +
 	        			250 + "," +
-	        			50000 + ")").execute();
+	        			50000 + "," +
+	        			3 + ")").execute();
 				
 				connection.prepareStatement("insert into playerAchievements values (NULL,'" +
             			"Riven" + "'," +
+            			false + "," +
+            			false + "," +
+            			false + "," +
+            			false + "," +
+            			false + ")").execute();
+				
+				// Lulu - Will get First Blood Achievement [at least] (has n/a)
+				// Everything else is more or less randomized.
+				connection.prepareStatement("insert into players values ('" + "Lulu" + "','" +
+						DateFormat.getDateTimeInstance().format(new Date()) + "'," +
+	        			50 + "," +
+	        			25 + "," +
+	        			25 + "," +
+	        			1000 + "," +
+	        			70.0 + "," +
+	        			360 + "," + 
+	        			120 + "," +
+	        			40 + "," +
+	        			400 + "," +
+	        			50 + "," +
+	        			250 + "," +
+	        			50000 + "," +
+	        			4 + ")").execute();
+				
+				connection.prepareStatement("insert into playerAchievements values (NULL,'" +
+            			"Lulu" + "'," +
+            			false + "," +
             			false + "," +
             			false + "," +
             			false + "," +
@@ -168,16 +209,19 @@ public class RiotDemo {
 		Player pDiana = new Player("Diana");
 		Player pIrelia = new Player("Irelia");
 		Player pRiven = new Player("Riven");
+		Player pLulu = new Player("Lulu");
 		
 		pLeona.printAllHistoricalPlayerStats();
 		pDiana.printAllHistoricalPlayerStats();
 		pIrelia.printAllHistoricalPlayerStats();
 		pRiven.printAllHistoricalPlayerStats();
+		pLulu.printAllHistoricalPlayerStats();
 		
 		Player pYorick = new Player("Yorick");
 		Player pSona = new Player("Sona");
 		Player pKayle = new Player("Kayle");
 		Player pJayce = new Player("Jayce");
+		Player pTwistedFate = new Player("TwistedFate");
 		
 		ArrayList<Player> playerList = new ArrayList<Player>();
 		playerList.add(pLeona);
@@ -188,8 +232,15 @@ public class RiotDemo {
 		playerList.add(pKayle);
 		playerList.add(pRiven);
 		playerList.add(pJayce);
+		playerList.add(pLulu);
+		playerList.add(pTwistedFate);
 		
 		Game demoGame = new Game(playerList);
+		
+		demoGame.runGame(Game.defaultJDBCParams, true);
+		
+		StatAchievementUpdater demoUpdater = new StatAchievementUpdater(demoGame);
+		demoUpdater.updatesFromRecentGame(Game.defaultJDBCParams);
 	}
 	
 	private static void tearDownTestData() {
@@ -207,11 +258,13 @@ public class RiotDemo {
 				connection.prepareStatement("delete from players where userName = 'Diana'").execute();
 				connection.prepareStatement("delete from players where userName = 'Irelia'").execute();
 				connection.prepareStatement("delete from players where userName = 'Riven'").execute();
+				connection.prepareStatement("delete from players where userName = 'Lulu'").execute();
 				
 				connection.prepareStatement("delete from playerAchievements where userName = 'Leona'").execute();
 				connection.prepareStatement("delete from playerAchievements where userName = 'Diana'").execute();
 				connection.prepareStatement("delete from playerAchievements where userName = 'Irelia'").execute();
 				connection.prepareStatement("delete from playerAchievements where userName = 'Riven'").execute();
+				connection.prepareStatement("delete from playerAchievements where userName = 'Lulu'").execute();
 				
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
@@ -258,7 +311,8 @@ public class RiotDemo {
 										+ "totalAssists integer, "
 										+ "totalSpellsCast integer, "
 										+ "totalSpellDmg integer, "
-										+ "totalPlayTime double " + ");").execute();
+										+ "totalPlayTime double, " 
+										+ "totalFirstBloods integer" + ");").execute();
 										//TODO: New player properties require an added column
 
 						connection.prepareStatement(
@@ -298,7 +352,8 @@ public class RiotDemo {
 												+ "ASharpshooter boolean,"
 												+ "ABruiser boolean,"
 												+ "AVeteran boolean,"
-												+ "ABigWinner boolean)").execute();
+												+ "ABigWinner boolean,"
+												+ "AShootsFirst boolean);").execute();
 												// TODO: New achievements require a new boolean column
 					} else if (tableCountInt == 4) {
 						System.out.println("All the tables are here.");

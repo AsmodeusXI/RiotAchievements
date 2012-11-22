@@ -16,7 +16,7 @@ public class VeteranAchievement extends Achievement {
 	
 	@Override
 	public void update(Player currentPlayer, InGamePlayer currentInGamePlayer, String[] aJDBCParams) {
-		if(currentPlayer.getTotalWins() >= 1000) {
+		if(currentPlayer.getTotalGames() >= 1000) {
 			this.setIsAchievedAtEnd(true, currentPlayer.getUserName());
 			
 			try {
