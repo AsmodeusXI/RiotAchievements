@@ -10,6 +10,10 @@ import com.samlawton.riotdemo.game.Player;
 
 public class VeteranAchievement extends Achievement {
 
+	public VeteranAchievement() {
+		mAchievementName = "Veteran";
+	}
+	
 	@Override
 	public void update(Player currentPlayer, InGamePlayer currentInGamePlayer, String[] aJDBCParams) {
 		if(currentPlayer.getTotalWins() >= 1000) {

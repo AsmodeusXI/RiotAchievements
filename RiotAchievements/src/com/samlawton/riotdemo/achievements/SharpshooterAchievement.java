@@ -10,6 +10,10 @@ import com.samlawton.riotdemo.game.Player;
 
 public class SharpshooterAchievement extends Achievement {
 
+	public SharpshooterAchievement() {
+		mAchievementName = "Sharpshooter";
+	}
+	
 	@Override
 	public void update(Player currentPlayer, InGamePlayer currentInGamePlayer, String[] aJDBCParams) {
 		if(currentInGamePlayer.getGameHitNum() >= 75.0 && currentInGamePlayer.getGameHitNum() != 0.0) {

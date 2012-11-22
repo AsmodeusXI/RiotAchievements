@@ -686,7 +686,7 @@ public class TestAchievements {
 			}
 			
 		} catch(SQLException ex) {
-			
+			ex.printStackTrace();
 		}
 		
 	}

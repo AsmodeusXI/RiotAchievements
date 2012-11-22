@@ -197,19 +197,19 @@ public class Player {
 	        	mTotalPlayTime = 0;
 	        	//TODO: New player statistics must be initialized here
 	        	connection.prepareStatement("insert into players values ('" + aUserName + "','" +
-	        			mUserCreateDate + "','" +
-	        			mTotalGames + "','" +
-	        			mTotalWins + "','" +
-	        			mTotalLosses + "','" +
-	        			mTotalAtkAttempts + "','" +
-	        			mTotalHitNum + "','" +
-	        			mTotalDmg + "','" +
-	        			mTotalKills + "','" +
-	        			mTotalFirstHitKills + "','" +
-	        			mTotalAssists + "','" +
-	        			mTotalSpellsCast + "','" +
-	        			mTotalSpellDmg + "','" +
-	        			mTotalPlayTime + "')").execute();
+	        			mUserCreateDate + "'," +
+	        			mTotalGames + "," +
+	        			mTotalWins + "," +
+	        			mTotalLosses + "," +
+	        			mTotalAtkAttempts + "," +
+	        			mTotalHitNum + "," +
+	        			mTotalDmg + "," +
+	        			mTotalKills + "," +
+	        			mTotalFirstHitKills + "," +
+	        			mTotalAssists + "," +
+	        			mTotalSpellsCast + "," +
+	        			mTotalSpellDmg + "," +
+	        			mTotalPlayTime + ")").execute();
 	        			//TODO: New player statistics must be inserted into DB column here (column must already exist)
             }
             
@@ -357,6 +357,21 @@ public class Player {
     	mTotalPlayTime += aJustPlayed.getGamePlayTime();
     	
     	//TODO: New player level statistics must be updated here by InGamePlayer
+	}
+	
+	/**
+	 * Prints out the current Player's achievement Data.
+	 */
+	public void printPlayersAchievementData() {
+		for(int i = 0; i < mPlayerAchievements.size(); i++) {
+			Achievement currAchievement = mPlayerAchievements.get(i);
+			if(currAchievement.getIsAchieved()) {
+				System.out.println(mUserName + " has the " + currAchievement.getAchievementName() + " Achievement.");
+			} else {
+				System.out.println(mUserName + " does not have the " + currAchievement.getAchievementName() + " Achievement.");
+			}
+		}
+		System.out.println();
 	}
 	
 	/**

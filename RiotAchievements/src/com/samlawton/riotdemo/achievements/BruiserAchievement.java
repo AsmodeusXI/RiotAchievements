@@ -10,6 +10,10 @@ import com.samlawton.riotdemo.game.Player;
 
 public class BruiserAchievement extends Achievement {
 
+	public BruiserAchievement() {
+		mAchievementName = "Bruiser";
+	}
+	
 	@Override
 	public void update(Player currentPlayer, InGamePlayer currentInGamePlayer, String[] aJDBCParams) {
 		if(currentInGamePlayer.getGameDmg() > 500) {

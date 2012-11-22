@@ -9,6 +9,10 @@ import com.samlawton.riotdemo.game.InGamePlayer;
 import com.samlawton.riotdemo.game.Player;
 
 public class BigWinnerAchievement extends Achievement {
+	
+	public BigWinnerAchievement() {
+		mAchievementName = "Big Winner";
+	}
 
 	@Override
 	public void update(Player currentPlayer, InGamePlayer currentInGamePlayer, String[] aJDBCParams) {

@@ -7,6 +7,8 @@ public abstract class Achievement {
 	
 	private boolean mIsAchieved = false;
 	
+	protected String mAchievementName;
+	
 	public abstract void update(Player currentPlayer, InGamePlayer currentInGamePlayer, String[] aJDBCParams);
 	public abstract void printVictoryMessage(String aUserName);
 	
@@ -32,6 +34,13 @@ public abstract class Achievement {
 	
 	public void setIsAchieved(boolean aAchieved) {
 		mIsAchieved = aAchieved;
+	}
+	
+	public String getAchievementName() {
+		return mAchievementName;
+	}
+	public void setAchievementName(String aAchievementName) {
+		mAchievementName = aAchievementName;
 	}
 	
 	// TODO: New achievements require a new class created that extend Achievement and override the abstract methods.
