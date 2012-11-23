@@ -43,6 +43,43 @@ public class RiotDemo {
             firstTimeDBInit();
 
             setUpTestData();
+            
+            Player pLeona = new Player("Leona");
+    		Player pDiana = new Player("Diana");
+    		Player pIrelia = new Player("Irelia");
+    		Player pRiven = new Player("Riven");
+    		Player pLulu = new Player("Lulu");
+    		
+    		pLeona.printAllHistoricalPlayerStats();
+    		pDiana.printAllHistoricalPlayerStats();
+    		pIrelia.printAllHistoricalPlayerStats();
+    		pRiven.printAllHistoricalPlayerStats();
+    		pLulu.printAllHistoricalPlayerStats();
+    		
+    		Player pYorick = new Player("Yorick");
+    		Player pSona = new Player("Sona");
+    		Player pKayle = new Player("Kayle");
+    		Player pJayce = new Player("Jayce");
+    		Player pTwistedFate = new Player("TwistedFate");
+    		
+    		ArrayList<Player> playerList = new ArrayList<Player>();
+    		playerList.add(pLeona);
+    		playerList.add(pYorick);
+    		playerList.add(pDiana);
+    		playerList.add(pSona);
+    		playerList.add(pIrelia);
+    		playerList.add(pKayle);
+    		playerList.add(pRiven);
+    		playerList.add(pJayce);
+    		playerList.add(pLulu);
+    		playerList.add(pTwistedFate);
+    		
+    		Game demoGame = new Game(playerList);
+    		
+    		demoGame.runGame(Game.defaultJDBCParams, true);
+    		
+    		StatAchievementUpdater demoUpdater = new StatAchievementUpdater(demoGame);
+    		demoUpdater.updatesFromRecentGame(Game.defaultJDBCParams);
     		
     		tearDownTestData();
 
@@ -204,43 +241,6 @@ public class RiotDemo {
 		} catch(SQLException ex) {
 			ex.printStackTrace();
 		}
-		
-		Player pLeona = new Player("Leona");
-		Player pDiana = new Player("Diana");
-		Player pIrelia = new Player("Irelia");
-		Player pRiven = new Player("Riven");
-		Player pLulu = new Player("Lulu");
-		
-		pLeona.printAllHistoricalPlayerStats();
-		pDiana.printAllHistoricalPlayerStats();
-		pIrelia.printAllHistoricalPlayerStats();
-		pRiven.printAllHistoricalPlayerStats();
-		pLulu.printAllHistoricalPlayerStats();
-		
-		Player pYorick = new Player("Yorick");
-		Player pSona = new Player("Sona");
-		Player pKayle = new Player("Kayle");
-		Player pJayce = new Player("Jayce");
-		Player pTwistedFate = new Player("TwistedFate");
-		
-		ArrayList<Player> playerList = new ArrayList<Player>();
-		playerList.add(pLeona);
-		playerList.add(pYorick);
-		playerList.add(pDiana);
-		playerList.add(pSona);
-		playerList.add(pIrelia);
-		playerList.add(pKayle);
-		playerList.add(pRiven);
-		playerList.add(pJayce);
-		playerList.add(pLulu);
-		playerList.add(pTwistedFate);
-		
-		Game demoGame = new Game(playerList);
-		
-		demoGame.runGame(Game.defaultJDBCParams, true);
-		
-		StatAchievementUpdater demoUpdater = new StatAchievementUpdater(demoGame);
-		demoUpdater.updatesFromRecentGame(Game.defaultJDBCParams);
 	}
 	
 	private static void tearDownTestData() {

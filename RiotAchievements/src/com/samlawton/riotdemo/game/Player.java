@@ -373,13 +373,18 @@ public class Player {
     	//TODO: New player level statistics must be updated here by InGamePlayer
 	}
 	
+	public void printAllHistoricalPlayerStats() {
+		printAllHistoricalPlayerStats(new String[]{null,null,null,null});
+	}
+	
 	/**
 	 * Prints out both the Player's stats and their
 	 * Achievement data.
 	 */
-	public void printAllHistoricalPlayerStats() {
+	public void printAllHistoricalPlayerStats(String[] aJDBCParams) {
 		printPlayersHistoricalStats();
 		printPlayersAchievementData();
+		printPlayersGamesPlayed(aJDBCParams);
 	}
 	
 	/**
@@ -387,6 +392,9 @@ public class Player {
 	 */
 	public void printPlayersHistoricalStats() {
 		System.out.println("Player " + mUserName + "'s Historical Stats: ");
+		System.out.println("Total Games: " + mTotalGames);
+		System.out.println("Total Wins: " + mTotalWins);
+		System.out.println("Total Losses: " + mTotalLosses);
 		System.out.println("Attack Attempts: " + mTotalAtkAttempts);
 		System.out.println("Hit Percentage: " + mTotalHitNum);
 		System.out.println("Total Damage: " + mTotalDmg);
@@ -415,6 +423,44 @@ public class Player {
 			}
 		}
 		System.out.println();
+	}
+	
+	public void printPlayersGamesPlayed(String[] aJDBCParams) {
+		
+		System.out.println("Player " + mUserName +"'s Played Games.");
+		try {
+			
+			Connection connection = null;
+			
+			String currentDriver = aJDBCParams[0] == null ? Game.jdbcDriver : aJDBCParams[0];
+			String currentJDBCURL = aJDBCParams[1] == null ? Game.jdbcString : aJDBCParams[1];
+			String currentUser = aJDBCParams[2] == null ? Game.jdbcUser : aJDBCParams[2];
+			String currentPass = aJDBCParams[3] == null ? Game.jdbcPass : aJDBCParams[3];
+			
+			try {
+				
+				Class.forName(currentDriver);
+				
+				connection = DriverManager.getConnection(currentJDBCURL, currentUser, currentPass);
+				
+				ResultSet gameResults = connection.prepareStatement("select gameID from gamesPlayed where userName = '" + mUserName + "'").executeQuery();
+				
+				while(gameResults.next()) {
+					System.out.println(gameResults.getString(1));
+				}
+				System.out.println();
+				
+				if(gameResults != null) gameResults.close();
+				
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} finally {
+				connection.close();
+			}
+			
+		} catch(SQLException ex) {
+			
+		}
 	}
 	
 	/**
