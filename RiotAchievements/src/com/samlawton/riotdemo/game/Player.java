@@ -100,8 +100,10 @@ public class Player {
 		
 		mPlayerAchievements = initAchievements();
 		
-		if(aUserName.contains(" ") || aUserName.contains(";") || aUserName.contains("/") || aUserName.contains("'")) {
+		if(aUserName.contains("\\s") || aUserName.contains(";") || aUserName.contains("/") || aUserName.contains("'")) {
 			System.out.println("Error! Player name is invalid!");
+			System.out.println("Player names are invalid when they contain a space, ';', '/', or \"'\".");
+			System.out.println("Exiting Program.");
 			System.exit(1);
 		}
 		
