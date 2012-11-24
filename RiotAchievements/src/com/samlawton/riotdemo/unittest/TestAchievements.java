@@ -242,7 +242,8 @@ public class TestAchievements {
 				testRS.close();
 
 				testRS = testConn.prepareStatement(
-						"select count(*) from gamesPlayed").executeQuery();
+						"select count(*) from gamesPlayed where userName = 'TestBlueUpdatePlayer' " +
+						"or userName = 'TestPurpleUpdatePlayer'").executeQuery();
 
 				testRS.next();
 
