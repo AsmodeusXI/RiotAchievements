@@ -10,6 +10,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+/**
+ * A class that represents a given Game instance,
+ * which assigns a list of Players to Teams, creates
+ * InGamePlayers to represent said Players, then runs
+ * the Game and assigns statistics (more or less randomly).
+ * This class contains a few methods that are specifically
+ * used for Unit Tests alone.
+ * @author Samuel H. Lawton
+ *
+ */
 public class Game {
 
 	private ArrayList<Player> mPlayerList;
@@ -445,6 +455,8 @@ public class Game {
 				randHitNum = 0.9;
 			} else if (currentDemoPlayer.equals("Riven")) {
 				gameDmg = 550;
+			} else if (currentDemoPlayer.equals("Lulu")) {
+				gameKills = 5;
 			}
 		}
 
@@ -750,9 +762,4 @@ public class Game {
 			aCurrentIGPlayer.setGamePlayTime(mGameLength);
 		}
 	}
-
-	public void runRiotDemoGame() {
-
-	}
-
 }

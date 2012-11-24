@@ -14,6 +14,17 @@ import com.samlawton.riotdemo.achievements.StatAchievementUpdater;
 import com.samlawton.riotdemo.game.Game;
 import com.samlawton.riotdemo.game.Player;
 
+/**
+ * A basic Demo that shows, using test data, the
+ * functionality required in the Coding Challenge document.
+ * Specifically, it creates a team of players with specific
+ * stats such that each is about to get one of the achievements,
+ * then runs a tailored game so that each one receives the 
+ * correct accolades. This should effectively demonstrate
+ * completion of the coding exercise.
+ * @author Samuel H. Lawton
+ *
+ */
 public class RiotDemo {
 
 	/**
@@ -23,8 +34,8 @@ public class RiotDemo {
 		
 		System.out.println("By the end of this demo, \nLeona should have the 'Big Winner' achievement,\n" +
 				"Diana should have the 'Veteran' achievement,\nIrelia should have the 'Sharpshooter' achievement,\n" +
-				"and Riven should have the 'Bruiser' achievement.\n" +
-				"Other players may get other achievements, but those are ancillary.\nLet's go!");
+				"Riven should have the 'Bruiser' achievement,\nand Lulu should have the 'Shoots First, Keeps Shooting Later' achievement.\n" +
+				"Other players may get achievements, but those are ancillary.\nLet's go!");
 		System.out.println();
 		
 		Server hsqlServer = null;
@@ -206,7 +217,7 @@ public class RiotDemo {
             			false + "," +
             			false + ")").execute();
 				
-				// Lulu - Will get First Blood Achievement [at least] (has n/a)
+				// Lulu - Will get Shoots First Achievement [at least] (has n/a)
 				// Everything else is more or less randomized.
 				connection.prepareStatement("insert into players values ('" + "Lulu" + "','" +
 						DateFormat.getDateTimeInstance().format(new Date()) + "'," +
@@ -216,8 +227,8 @@ public class RiotDemo {
 	        			1000 + "," +
 	        			70.0 + "," +
 	        			360 + "," + 
-	        			120 + "," +
-	        			40 + "," +
+	        			24 + "," +
+	        			10 + "," +
 	        			400 + "," +
 	        			50 + "," +
 	        			250 + "," +
@@ -265,6 +276,12 @@ public class RiotDemo {
 				connection.prepareStatement("delete from playerAchievements where userName = 'Irelia'").execute();
 				connection.prepareStatement("delete from playerAchievements where userName = 'Riven'").execute();
 				connection.prepareStatement("delete from playerAchievements where userName = 'Lulu'").execute();
+				
+				connection.prepareStatement("delete from gamesPlayed where userName = 'Leona'").execute();
+				connection.prepareStatement("delete from gamesPlayed where userName = 'Diana'").execute();
+				connection.prepareStatement("delete from gamesPlayed where userName = 'Irelia'").execute();
+				connection.prepareStatement("delete from gamesPlayed where userName = 'Riven'").execute();
+				connection.prepareStatement("delete from gamesPlayed where userName = 'Lulu'").execute();
 				
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();

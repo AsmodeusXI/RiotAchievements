@@ -8,16 +8,24 @@ import com.samlawton.riotdemo.game.Game;
 import com.samlawton.riotdemo.game.InGamePlayer;
 import com.samlawton.riotdemo.game.Player;
 
+/**
+ * 
+ * An Achievement that is gained if a Player has 5 historical First Bloods
+ * and 25 historical kills.
+ * 
+ * @author Samuel H. Lawton
+ *
+ */
 public class ShootsFirstAchievement extends Achievement {
 	
 	public ShootsFirstAchievement() {
-		mAchievementName = "Shoots First";
+		mAchievementName = "Shoots First, Keeps Shooting Later";
 	}
 
 	@Override
 	public void update(Player currentPlayer, InGamePlayer currentInGamePlayer,
 			String[] aJDBCParams) {
-		if(currentPlayer.getFirstBloods() >= 5) {
+		if(currentPlayer.getFirstBloods() >= 5 && currentPlayer.getTotalKills() >= 25) {
 			this.setIsAchievedAtEnd(true, currentPlayer.getUserName());
 			
 			try {
@@ -53,7 +61,7 @@ public class ShootsFirstAchievement extends Achievement {
 
 	@Override
 	public void printVictoryMessage(String aUserName) {
-		System.out.println("Congratulations, " + aUserName + "! You have been awarded with Achievement: Shoots First!");
+		System.out.println("Congratulations, " + aUserName + "! You have been awarded with Achievement: " + mAchievementName + "!");
 	}
 
 }

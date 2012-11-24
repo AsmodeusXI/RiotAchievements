@@ -15,6 +15,13 @@ import com.samlawton.riotdemo.achievements.StatAchievementUpdater;
 import com.samlawton.riotdemo.game.Game;
 import com.samlawton.riotdemo.game.Player;
 
+/**
+ * Tests the various Player, Game, and Achievement classes using
+ * an in-memory database which disappears when the unit tests are
+ * completed. Contains four tests total.
+ * @author Samuel H. Lawton
+ *
+ */
 public class TestAchievements {
 
 	private static Server hsqlServer = null;
@@ -36,20 +43,12 @@ public class TestAchievements {
 
 		hsqlServer = new Server();
 
-		// HSQLDB prints out a lot of informations when
-		// starting and closing, which we don't need now.
-		// Normally you should point the setLogWriter
-		// to some Writer object that could store the logs.
 		hsqlServer.setLogWriter(null);
 		hsqlServer.setSilent(true);
 
-		// The actual database will be named 'xdb' and its
-		// settings and data will be stored in files
-		// testdb.properties and testdb.script
 		hsqlServer.setDatabaseName(0, dbName);
 		hsqlServer.setDatabasePath(0, "file:" + dbName);
 
-		// Start the database!
 		hsqlServer.start();
 
 		try {
@@ -77,7 +76,7 @@ public class TestAchievements {
 								+ "totalSpellsCast integer, "
 								+ "totalSpellDmg integer, "
 								+ "totalPlayTime double, " 
-								+ "totalFirstBloods" + ");").execute();
+								+ "totalFirstBloods integer" + ");").execute();
 								//TODO: New player properties require an added column
 
 				createEnv.prepareStatement(

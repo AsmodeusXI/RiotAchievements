@@ -1,5 +1,13 @@
 package com.samlawton.riotdemo.game;
 
+/**
+ * A class that represents a Player in a 
+ * certain Game. Contains the statistics that are
+ * only relevant for ONE Game such that those can 
+ * be queried for Achievements.
+ * @author Samuel H. Lawton
+ *
+ */
 public class InGamePlayer {
 	
 	private int mGameAtkAttempts = 0;

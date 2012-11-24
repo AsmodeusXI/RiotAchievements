@@ -8,6 +8,12 @@ import com.samlawton.riotdemo.game.Game;
 import com.samlawton.riotdemo.game.InGamePlayer;
 import com.samlawton.riotdemo.game.Player;
 
+/**
+ * An Achievement that is awarded when an InGamePlayer deals
+ * 500 points of damage in a single game.
+ * @author Samuel H. Lawton
+ *
+ */
 public class BruiserAchievement extends Achievement {
 
 	public BruiserAchievement() {

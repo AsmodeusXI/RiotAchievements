@@ -13,6 +13,14 @@ import com.samlawton.riotdemo.achievements.StatAchievementUpdater;
 import com.samlawton.riotdemo.game.Game;
 import com.samlawton.riotdemo.game.Player;
 
+/**
+ * A driver for running miscellaneous parts of the
+ * Game and Player classes created for the Demo.
+ * Allows for additional inspection of the created 
+ * settings, classes, and database interactions.
+ * @author Samuel H. Lawton
+ *
+ */
 public class GameDriver {
 
 	private static boolean mContinue = true;
@@ -24,6 +32,9 @@ public class GameDriver {
 	public static void main(String[] args) {
 
 		System.out.println("Welcome to Sam Lawton's Game Achievement Driver.");
+		System.out.println();
+		System.out.println("PLEASE RUN THE RiotDemo APPLICATION BEFORE THIS ONE!");
+		System.out.println();
 		System.out
 				.println("Running the RiotDemo class should demonstrate the functionality requested\n"
 						+ "in the exercise document, but this is around so that you can run Games yourself\n"

@@ -16,6 +16,14 @@ import com.samlawton.riotdemo.achievements.SharpshooterAchievement;
 import com.samlawton.riotdemo.achievements.ShootsFirstAchievement;
 import com.samlawton.riotdemo.achievements.VeteranAchievement;
 
+/**
+ * A class to represent a persistent Player of
+ * the Game for which Achievements are being
+ * awarded. Contains the update methods for its
+ * statistics and Achievements.
+ * @author Samuel H. Lawton
+ *
+ */
 public class Player {
 	
 	private String mUserName;
@@ -507,6 +515,42 @@ public class Player {
 	
 	public int getFirstBloods() {
 		return mTotalFirstBloods;
+	}
+
+	public int getTotalAtkAttempts() {
+		return mTotalAtkAttempts;
+	}
+
+	public double getTotalHitNum() {
+		return mTotalHitNum;
+	}
+
+	public int getTotalDmg() {
+		return mTotalDmg;
+	}
+
+	public int getTotalKills() {
+		return mTotalKills;
+	}
+
+	public int getTotalFirstHitKills() {
+		return mTotalFirstHitKills;
+	}
+
+	public int getTotalAssists() {
+		return mTotalAssists;
+	}
+
+	public int getTotalSpellsCast() {
+		return mTotalSpellsCast;
+	}
+
+	public int getTotalSpellDmg() {
+		return mTotalSpellDmg;
+	}
+
+	public long getTotalPlayTime() {
+		return mTotalPlayTime;
 	}
 
 	@Override

@@ -8,6 +8,12 @@ import com.samlawton.riotdemo.game.Game;
 import com.samlawton.riotdemo.game.InGamePlayer;
 import com.samlawton.riotdemo.game.Player;
 
+/**
+ * An Achievement that is awarded when a Player has
+ * over 200 wins.
+ * @author Samuel H. Lawton
+ *
+ */
 public class BigWinnerAchievement extends Achievement {
 	
 	public BigWinnerAchievement() {

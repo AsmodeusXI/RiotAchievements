@@ -5,6 +5,14 @@ import java.util.Scanner;
 
 import org.hsqldb.Server;
 
+/**
+ * A simple class for starting and stopping the HSQL 
+ * server to test database DDL, etc. 
+ * 
+ * Code taken from http://www.javablogging.com/embedded-database-in-java-use-of-hsqldb/
+ * @author Samuel H. Lawton
+ *
+ */
 public class HSQLServerTest {
 
     public static void main(String[] args) throws

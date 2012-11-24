@@ -8,6 +8,12 @@ import com.samlawton.riotdemo.game.Game;
 import com.samlawton.riotdemo.game.InGamePlayer;
 import com.samlawton.riotdemo.game.Player;
 
+/**
+ * An Achievement that is awarded when an InGamePlayer has attacked
+ * at least once and has a hit ratio of over 75%.
+ * @author Samuel H. Lawton
+ *
+ */
 public class SharpshooterAchievement extends Achievement {
 
 	public SharpshooterAchievement() {

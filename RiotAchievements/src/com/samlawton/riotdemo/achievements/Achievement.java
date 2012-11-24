@@ -3,6 +3,13 @@ package com.samlawton.riotdemo.achievements;
 import com.samlawton.riotdemo.game.InGamePlayer;
 import com.samlawton.riotdemo.game.Player;
 
+/**
+ * An abstract class containing the basic methods
+ * and fields that every Achievement requires. All
+ * Achievements will inherit from this class.
+ * @author Samuel H. Lawton
+ *
+ */
 public abstract class Achievement {
 	
 	private boolean mIsAchieved = false;

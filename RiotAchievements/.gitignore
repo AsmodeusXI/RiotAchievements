@@ -6,3 +6,5 @@
 /testdb.log
 /testdb.properties
 /testdb.script
+/testdb.lck
+/AchievementDB.lck

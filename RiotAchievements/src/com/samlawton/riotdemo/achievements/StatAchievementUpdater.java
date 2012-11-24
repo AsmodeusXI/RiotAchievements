@@ -9,6 +9,14 @@ import com.samlawton.riotdemo.game.Game;
 import com.samlawton.riotdemo.game.InGamePlayer;
 import com.samlawton.riotdemo.game.Player;
 
+/**
+ * A class that takes in a recent Game and uses
+ * its data to update the Stats and Achievements of
+ * all the Players involved. This class calls all of
+ * the update code for Players in a given Game.
+ * @author Samuel H. Lawton
+ *
+ */
 public class StatAchievementUpdater {
 	
 	private final Game mFinishedGame;
